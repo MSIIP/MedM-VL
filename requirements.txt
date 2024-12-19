@@ -1,0 +1,17 @@
+torch
+torchvision
+torchaudio
+transformers
+monai
+flash-attn --no-build-isolation
+deepspeed
+accelerate
+peft
+tensorboard
+ipykernel
+scikit-learn
+evaluate
+nltk
+rouge-score
+bert-score
+sentencepiece

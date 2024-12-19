@@ -1,0 +1,82 @@
+[
+    {
+        "id": 0,
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nGenerate a medical report based on this image."
+            },
+            {
+                "from": "gpt",
+                "value": "Elongated ovoid mass in the upper posterior mediastinum in a right para-oesophageal location at the T1/2 level, measuring 19 mm in superoinferior extent and 7.6 x 4.7 mm in the axial plane. This is compatible with an ectopic parathyroid adenoma."
+            }
+        ],
+        "image3d": [
+            "ct_quizze/012518/Axial_C__portal_venous_phase.npy"
+        ]
+    },
+    {
+        "id": 7,
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nPlease caption this scan with findings."
+            },
+            {
+                "from": "gpt",
+                "value": "A poorly defined soft-tissue mass,\u00a0located in the right infrascapular or subscapular region with attenuation similar to that of the adjacent skeletal muscle."
+            }
+        ],
+        "image3d": [
+            "ct_case/013663/Axial_C__arterial_phase.npy"
+        ]
+    },
+    {
+        "id": 20,
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nDescribe the findings of the medical image you see."
+            },
+            {
+                "from": "gpt",
+                "value": "Opacification of the left internal carotid artery (ICA) only until segment C1, right anterior cerebral artery (ACA) until A2, and both vertebral arteries (VA) until V2.Cerebral swelling.\u00a0Subarachnoid, parenchymal and intraventricular hemorrhage."
+            }
+        ],
+        "image3d": [
+            "ct_case/004753/Sagittal_C__arterial_phase.npy"
+        ]
+    },
+    {
+        "id": 31,
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nCould you analyze and provide a caption for the findings in this medical image?"
+            },
+            {
+                "from": "gpt",
+                "value": "No acute intracranial hemorrhage identified. Focal hypodensities in the left lentiform nuclear and left corona radiata likely represent chronic lacunar infarcts. Grey-white differentiation is otherwise preserved. No mass lesion. Ventricular size, sulcal pattern and basal cisterns are all unchanged. No bony abnormality demonstrated.Increased CBV/CBF and reduced TMax/MTT in the right temporal and right parietal lobes in keeping with hyperperfusion.\u00a0Basilar fenestration. No aneurysms or large vessel filling defect identified. Asymmetric caliber of the M3/M4 branches in the right temporoparietal region."
+            }
+        ],
+        "image3d": [
+            "ct_case/012183/Axial_non_contrast.npy"
+        ]
+    },
+    {
+        "id": 40,
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nPlease generate a medical report based on this image."
+            },
+            {
+                "from": "gpt",
+                "value": "Two well-defined sessile juxtacortical sclerotic bone lesions bulging from the outer table of the frontal bone.Cavum Vergae and cavum septum pellucidum.\u00a0Age-related cerebral atrophy."
+            }
+        ],
+        "image3d": [
+            "ct_quizze/002435/3D_VR_.npy"
+        ]
+    }
+]
