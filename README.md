@@ -44,7 +44,7 @@ Here are some examples of `MedM-VL-CT-3B-en` in different scenarios.
 
 If you are confused about some parameters during usage, please refer to [Parameter Interpretation](docs/param_interpretation.md).
 
-### 1. Train a general medical MLLM from scratch
+### 1. Train a general medical LVLM from scratch
 
 ``` bash
 # 1. pre-train (annotation format: docs/example_pretrain.json)
@@ -58,7 +58,7 @@ bash scripts/train/MedM-VL-CT-3B-en/finetune.sh
 # while the latter refers to instruction tuning data.
 ```
 
-### 2. Fine-tune a specialized medical MLLM with pre-trained weights
+### 2. Fine-tune a specialized medical LVLM with pre-trained weights
 
 ``` bash
 # 1. download weights from HuggingFace
