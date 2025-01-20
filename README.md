@@ -225,16 +225,16 @@ bash scripts/eval/inference.sh
   </tr>
   <tr>
     <td> MedM-VL-2D-3B-en </td>
-    <td align="center"> <b>81.05</b> </td>
-    <td align="center"> <b>72.14</b> </td>
-    <td align="center"> 13.16 </td>
-    <td align="center"> <b>22.63</b> </td>
-    <td align="center"> <b>62.86</b> </td>
-    <td align="center"> <b>70.97</b> </td>
-    <td align="center"> <b>20.46</b> </td>
-    <td align="center"> <b>68.94</b> </td>
-    <td align="center"> <b>31.92</b> </td>
-    <td align="center"> <b>84.45</b> </td>
+    <td align="center"> <b>85.49</b> </td>
+    <td align="center"> <b>80.68</b> </td>
+    <td align="center"> 14.45 </td>
+    <td align="center"> <b>25.50</b> </td>
+    <td align="center"> <b>64.06</b> </td>
+    <td align="center"> <b>74.11</b> </td>
+    <td align="center"> <b>26.42</b> </td>
+    <td align="center"> <b>82.94</b> </td>
+    <td align="center"> <b>33.51</b> </td>
+    <td align="center"> <b>85.86</b> </td>
   </tr>
 </table>
 
