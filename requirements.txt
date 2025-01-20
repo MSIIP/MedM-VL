@@ -3,7 +3,6 @@ torchvision
 torchaudio
 transformers
 monai
-flash-attn --no-build-isolation
 deepspeed
 accelerate
 peft

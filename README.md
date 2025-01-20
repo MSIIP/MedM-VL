@@ -35,6 +35,7 @@ cd MedM-VL
 conda create -n medm python=3.10
 conda activate medm
 pip install -r requirements.txt
+pip install flash-attn --no-build-isolation
 ```
 
 

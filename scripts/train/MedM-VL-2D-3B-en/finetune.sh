@@ -7,7 +7,7 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --image_path / \
     --training_recipe common \
     --tune_type_llm full \
-    --tune_type_encoder_image frozen \
+    --tune_type_encoder_image full \
     --tune_type_connector_image full \
     --bf16 True \
     --gradient_checkpointing True \
@@ -17,8 +17,8 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \
     --num_train_epochs 3 \
-    --per_device_train_batch_size 16 \
-    --gradient_accumulation_steps 2 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
     --learning_rate 2e-5 \
     --weight_decay 0.0 \
     --warmup_ratio 0.03 \

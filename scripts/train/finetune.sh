@@ -6,7 +6,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --conv_version llama3 \
     --image3d_path /hdd/shiym/datasets/medical-image-analysis/M3D/npys_256 \
     --training_recipe common \
-    --tune_type_llm full \
+    --tune_type_llm lora \
     --llm_lora_r 128 \
     --llm_lora_alpha 256 \
     --llm_lora_dropout 0.05 \
