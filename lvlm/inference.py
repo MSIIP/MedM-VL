@@ -21,6 +21,9 @@ def inference(args):
     model.to(dtype=model_dtype, device=device)
     model.eval()
 
+    if args.batch_size > 1:
+        model.config.llm_padding_side = "left"
+
     print("*" * 30 + "Stage 2" + "*" * 30)
     print("Create data_module...")
     data_module = create_data_module(
@@ -30,7 +33,7 @@ def inference(args):
     )
     data_loader = DataLoader(
         data_module["train_dataset"],
-        batch_size=1,
+        batch_size=args.batch_size,
         shuffle=False,
         collate_fn=data_module["data_collator"],
     )
@@ -56,9 +59,10 @@ def inference(args):
                 eos_token_id=model.tokenizer.eos_token_id,
             )
 
-            outputs = model.tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0]
-            outputs_list.append(outputs)
-            print(outputs)
+            outputs = model.tokenizer.batch_decode(output_ids, skip_special_tokens=True)
+            outputs_list.extend(outputs)
+            for output in outputs:
+                print(output)
 
     print("*" * 30 + "Stage 5" + "*" * 30)
     print("Save outputs...")
@@ -79,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_length", type=int, default=None)
     parser.add_argument("--num_beams", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)
+    parser.add_argument("--batch_size", type=int, default=1)
     args = parser.parse_args()
     set_seed(42)
 

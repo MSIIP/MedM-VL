@@ -142,12 +142,15 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
             image = self.connector_image(image)
 
         if image3d is not None:
-            image3d = self.encoder_image3d(
-                image3d,
-                select_layer=self.config.encoder_image3d_select_layer,
-                select_feature=self.config.encoder_image3d_select_feature,
-            )
-            image3d = self.connector_image3d(image3d)
+            if self.encoder_image is not None:
+                pass
+            elif self.encoder_image3d is not None:
+                image3d = self.encoder_image3d(
+                    image3d,
+                    select_layer=self.config.encoder_image3d_select_layer,
+                    select_feature=self.config.encoder_image3d_select_feature,
+                )
+                image3d = self.connector_image3d(image3d)
 
         # 初始化labels
         if labels is None:

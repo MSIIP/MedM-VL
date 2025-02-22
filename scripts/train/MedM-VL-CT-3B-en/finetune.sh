@@ -4,7 +4,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
     --data_path /hdd/shiym/datasets_processed/MedM/m3d_finetune.json \
     --conv_version llama3 \
-    --image3d_path /hdd/shiym/datasets/medical-image-analysis/M3D/npys_256 \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/M3D/npys_256 \
     --training_recipe common \
     --tune_type_llm full \
     --tune_type_encoder_image3d frozen \

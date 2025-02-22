@@ -11,7 +11,7 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --tokenizer_use_fast False \
     --encoder_image_type siglip \
     --encoder_image_name_or_path google/siglip-so400m-patch14-384 \
-    --encoder_image_select_layer -2 \
+    --encoder_image_select_layer -1 \
     --encoder_image_select_feature cls_patch \
     --connector_image_type mlp \
     --connector_image_name mlp2x_gelu \
