@@ -16,8 +16,8 @@ class MultiModalDataset(Dataset):
         super(MultiModalDataset, self).__init__()
         self.data_arguments = data_arguments
         self.mode = mode
-        self.image=image
-        self.prompt=prompt
+        self.image = image
+        self.prompt = "<image>\n" + prompt
         # with open(data_arguments.data_path, "r") as f:
         #     self.data = json.load(f)
 
@@ -39,7 +39,7 @@ class MultiModalDataset(Dataset):
 
     def __getitem__(self, idx):
         # data_item = self.data[idx]
-        conversations=[
+        conversations = [
             {
                 "from": "human",
                 "value": self.prompt
@@ -98,7 +98,7 @@ class DataCollatorForMultiModalDataset:
 
 
 def create_data_module(model, data_arguments, mode, image, prompt):
-    train_dataset = MultiModalDataset(model=model, data_arguments=data_arguments, mode=mode,image=image,prompt=prompt)
+    train_dataset = MultiModalDataset(model=model, data_arguments=data_arguments, mode=mode, image=image, prompt=prompt)
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return dict(
         train_dataset=train_dataset,
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             }
         </style>
         """)
-        gr.Markdown("# 🚀 多模态大模型交互框架")
+        gr.Markdown("# 🚀 MedM-VL 交互框架")
         with gr.Row():
             with gr.Column():
                 text_input = gr.Textbox(label="输入文本提示", placeholder="请输入您的提示...")
