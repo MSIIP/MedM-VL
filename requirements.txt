@@ -14,3 +14,4 @@ nltk
 rouge-score
 bert-score
 sentencepiece
+gradio
