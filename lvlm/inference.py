@@ -51,7 +51,7 @@ def inference(args):
 
             output_ids = model.generate(
                 **batch,
-                max_length=model.config.llm_max_length if args.max_length is None else args.max_length,
+                max_new_tokens=args.max_new_tokens,
                 do_sample=True if args.temperature > 0 else False,
                 num_beams=args.num_beams,
                 temperature=args.temperature,
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     parser.add_argument("--image3d_path", type=str, default=None)
     parser.add_argument("--resume_from_checkpoint", type=str, default=None)
     parser.add_argument("--output_dir", type=str, default=None)
-    parser.add_argument("--max_length", type=int, default=None)
+    parser.add_argument("--max_new_tokens", type=int, default=None)
     parser.add_argument("--num_beams", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--batch_size", type=int, default=1)

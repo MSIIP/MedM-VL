@@ -9,6 +9,6 @@ CUDA_VISIBLE_DEVICES=4 python lvlm/inference.py \
     --image_path / \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \
-    --max_length 2048 \
+    --max_new_tokens 256 \
     --num_beams 1 \
     --temperature 0

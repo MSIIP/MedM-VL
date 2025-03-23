@@ -9,7 +9,7 @@ CUDA_VISIBLE_DEVICES=2 python lvlm/inference.py \
     --image3d_path /hdd/shiym/datasets/medical-image-analysis/M3D/npys_256 \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \
-    --max_length 512 \
+    --max_new_tokens 256 \
     --num_beams 1 \
     --temperature 0
 

@@ -143,7 +143,22 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
 
         if image3d is not None:
             if self.encoder_image is not None:
-                pass
+                B, C, N, H, W = image3d.size()
+                image = image3d.transpose(1, 2).contiguous()  # (B, N, C, H, W)
+                image = image.view(B*N, C, H, W)  # (B*N, C, H, W)
+                image = image.expand(B*N, 3, H, W)  # (B*N, 3, H, W)
+
+                image = self.encoder_image(
+                    image,
+                    select_layer=self.config.encoder_image_select_layer,
+                    select_feature=self.config.encoder_image_select_feature,
+                )
+                image = self.connector_image(image)  # (B*N, L, D)
+
+                image = image.view(B, N, image.shape[1], image.shape[2])  # (B, N, L, D)
+                image = image.mean(dim=1)  # (B, L, D)
+                image3d = image
+
             elif self.encoder_image3d is not None:
                 image3d = self.encoder_image3d(
                     image3d,

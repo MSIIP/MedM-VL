@@ -9,7 +9,7 @@ CUDA_VISIBLE_DEVICES=4 python lvlm/inference.py \
     --image_path /hdd/shiym/datasets/0_public/LLaVA/eval/MMMU/all_images \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \
-    --max_length 3072 \
+    --max_new_tokens 256 \
     --num_beams 1 \
     --temperature 0
 
