@@ -16,7 +16,7 @@ class MultiModalDataset(Dataset):
         super(MultiModalDataset, self).__init__()
         self.data_arguments = data_arguments
         self.mode = mode
-        with open(data_arguments.data_path, "r") as f:
+        with open(data_arguments.data_path, "r", encoding="utf-8") as f:
             self.data = json.load(f)
 
         self.tokenizer = model.tokenizer

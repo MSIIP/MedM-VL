@@ -5,7 +5,7 @@ MODEL_NAME="TinyLLaVA-phi2-siglip-finetune"
 
 CUDA_VISIBLE_DEVICES=3 python lvlm/inference.py \
     --model_dtype float16 \
-    --data_path /hdd/shiym/datasets_processed/MedM/mme/mme.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/llava/mme.json \
     --conv_version phi \
     --image_path /hdd/shiym/datasets/0_public/LLaVA/eval/MME/MME_Benchmark_release_version \
     --resume_from_checkpoint $MODEL_PATH \
@@ -14,8 +14,8 @@ CUDA_VISIBLE_DEVICES=3 python lvlm/inference.py \
     --num_beams 1 \
     --temperature 0
 
-python scripts/eval/mme/eval_mme.py \
-    --question_path /hdd/shiym/datasets_processed/MedM/mme/mme.json \
+python scripts/eval/llava_bench/eval_mme.py \
+    --question_path /hdd/shiym/datasets_processed/MedM-VL/llava/mme.json \
     --predict_path $MODEL_PATH/eval/mme.json \
     --answer_dir /hdd/shiym/datasets/0_public/LLaVA/eval/MME/MME_Benchmark_release_version \
     --output_dir /hdd/shiym/datasets/0_public/LLaVA/eval/MME/eval_tool/answers/$MODEL_NAME \

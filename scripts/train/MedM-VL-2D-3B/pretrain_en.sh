@@ -15,7 +15,7 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --encoder_image_select_feature cls_patch \
     --connector_image_type mlp \
     --connector_image_name mlp2x_gelu \
-    --data_path /hdd/shiym/datasets_processed/MedM/llava_pretrain.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/llava/pretrain_llava.json \
     --conv_version pretrain \
     --image_path /hdd/shiym/datasets/0_public/LLaVA/LLaVA-Pretrain/images \
     --training_recipe common \

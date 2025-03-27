@@ -15,7 +15,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --encoder_image3d_select_feature patch \
     --connector_image3d_type spatial_pooling \
     --connector_image3d_name mlp2x_gelu \
-    --data_path /hdd/shiym/datasets_processed/MedM/m3d_pretrain.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/m3d/pretrain_m3d.json \
     --conv_version pretrain_image3d \
     --image3d_path /hdd/common/datasets/medical-image-analysis/M3D/npys_256 \
     --training_recipe common \

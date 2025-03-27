@@ -4,7 +4,7 @@ MODEL_PATH="/hdd/shiym/work_dirs/MedM-VL/TinyLLaVA-phi2-siglip-finetune"
 
 CUDA_VISIBLE_DEVICES=2 python lvlm/inference.py \
     --model_dtype float16 \
-    --data_path /hdd/shiym/datasets_processed/MedM/mmbench/mmbench.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/llava/mmbench.json \
     --conv_version phi \
     --image_path /hdd/shiym/datasets/0_public/LLaVA/eval/mmbench/images \
     --resume_from_checkpoint $MODEL_PATH \
@@ -13,7 +13,7 @@ CUDA_VISIBLE_DEVICES=2 python lvlm/inference.py \
     --num_beams 1 \
     --temperature 0
 
-python scripts/eval/mmbench/eval_mmbench.py \
+python scripts/eval/llava_bench/eval_mmbench.py \
     --predict_path $MODEL_PATH/eval/mmbench.json \
     --result_path $MODEL_PATH/eval/mmbench_result.xlsx \
     --answer_path /hdd/shiym/datasets/0_public/LLaVA/eval/mmbench/mmbench_dev_20230712.tsv

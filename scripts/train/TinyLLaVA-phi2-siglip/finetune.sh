@@ -2,7 +2,7 @@ export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
 deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
-    --data_path /hdd/shiym/datasets_processed/MedM/llava_finetune.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/llava/finetune_llava.json \
     --conv_version phi \
     --image_path /hdd/shiym/datasets/0_public/LLaVA/visual-instruction-tuning-images \
     --training_recipe common \

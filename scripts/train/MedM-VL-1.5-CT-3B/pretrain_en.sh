@@ -9,22 +9,22 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --llm_padding_side right \
     --llm_attn_implementation flash_attention_2 \
     --tokenizer_use_fast False \
-    --encoder_image3d_type m3dclip \
-    --encoder_image3d_name_or_path GoodBaiBai88/M3D-CLIP \
+    --encoder_image3d_type medmclip \
+    --encoder_image3d_name_or_path /hdd/shiym/work_dirs/MedMCLIP \
     --encoder_image3d_select_layer -1 \
     --encoder_image3d_select_feature patch \
     --connector_image3d_type spatial_pooling \
     --connector_image3d_name mlp2x_gelu \
-    --data_path /hdd/shiym/datasets_processed/MedM/m3d_pretrain.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/radiopaedia/ct_train_caption_duplicate_en.json \
     --conv_version pretrain_image3d \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/M3D/npys_256 \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/MedM-VL/Radiopaedia/npys_32_256_256_std \
     --training_recipe common \
     --tune_type_llm frozen \
     --tune_type_encoder_image3d frozen \
     --tune_type_connector_image3d full \
     --bf16 True \
     --gradient_checkpointing True \
-    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-qwen2-m3dclip-pretrain \
+    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-1.5-CT-3B-en-pretrain \
     --dataloader_num_workers 8 \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \

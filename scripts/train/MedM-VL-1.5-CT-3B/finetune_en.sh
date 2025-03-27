@@ -2,17 +2,17 @@ export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
 deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
-    --data_path /hdd/shiym/datasets_processed/MedM/m3d_finetune.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/radiopaedia/ct_train_vqa_duplicate_en.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/M3D/npys_256 \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/MedM-VL/Radiopaedia/npys_32_256_256_std \
     --training_recipe common \
     --tune_type_llm full \
     --tune_type_encoder_image3d frozen \
     --tune_type_connector_image3d full \
     --bf16 True \
     --gradient_checkpointing True \
-    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-qwen2-m3dclip-finetune \
-    --resume_from_checkpoint /hdd/shiym/work_dirs/MedM-VL/MedM-VL-qwen2-m3dclip-pretrain \
+    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-1.5-CT-3B-en-finetune \
+    --resume_from_checkpoint /hdd/shiym/work_dirs/MedM-VL/MedM-VL-1.5-CT-3B-en-pretrain \
     --dataloader_num_workers 8 \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \
