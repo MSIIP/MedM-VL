@@ -9,15 +9,18 @@ import torch.nn as nn
 from torch.utils.data import Dataset
 
 from lvlm.dataset.template import TEMPlATE_FACTORY
-
+import time
+import json
+from collections import defaultdict
+from torch.utils.data import DataLoader
 
 class MultiModalDataset(Dataset):
-    def __init__(self, model, data_arguments, mode):
+    def __init__(self, model, data,data_arguments, mode):
         super(MultiModalDataset, self).__init__()
         self.data_arguments = data_arguments
         self.mode = mode
-        with open(data_arguments.data_path, "r", encoding="utf-8") as f:
-            self.data = json.load(f)
+        # with open(data_arguments.data_path, "r", encoding="utf-8") as f:
+        self.data = data
 
         self.tokenizer = model.tokenizer
         self.template = TEMPlATE_FACTORY[data_arguments.conv_version]()
@@ -132,10 +135,34 @@ class DataCollatorForMultiModalDataset:
 
 
 def create_data_module(model, data_arguments, mode):
-    train_dataset = MultiModalDataset(model=model, data_arguments=data_arguments, mode=mode)
+    data_path=data_arguments.data_path
+    with open(data_path, "r") as f:
+        data = json.load(f)
+    train_dataset = MultiModalDataset(model=model,data=data, data_arguments=data_arguments, mode=mode)
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return dict(
         train_dataset=train_dataset,
         eval_dataset=None,
         data_collator=data_collator,
     )
+
+def create_multi_data_module(model, data_arguments,ratio_dict,mode="train"):
+    data_path=data_arguments.data_path
+    with open(data_path, "r") as f:
+        all_data = json.load(f)
+
+    task_data_map = defaultdict(list)
+    for item in all_data:
+        task = item["task"]
+        task_data_map[task].append(item)
+
+    task_loaders = {"train":[]}
+
+    for task_name, data_list in task_data_map.items():
+        dataset = MultiModalDataset(model=model, data=data_list,data_arguments=data_arguments, mode=mode)
+        dataset.sample_ratio=ratio_dict[task_name]
+        dataset.task=task_name
+        task_loaders["train"].append(dataset)
+    collator = DataCollatorForMultiModalDataset(model.tokenizer, mode=mode)
+    return task_loaders,collator
+

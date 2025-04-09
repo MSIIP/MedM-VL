@@ -132,7 +132,7 @@ def predict(prompt, image, temperature, max_token):
 
             output_ids = model.generate(
                 **batch,
-                max_length=max_token,
+                max_new_tokens=max_token,
                 do_sample=True if temperature > 0 else False,
                 num_beams=args.num_beams,
                 temperature=temperature,
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     parser.add_argument('--conv_version', type=str)
     parser.add_argument('--resume_from_checkpoint', type=str)
     parser.add_argument('--output_dir', type=str)
-    parser.add_argument('--max_length', type=int)
+    parser.add_argument('--new_length', type=int)
     parser.add_argument('--num_beams', type=int)
     parser.add_argument('--temperature', type=int)
     args = parser.parse_args()
@@ -191,7 +191,7 @@ if __name__ == "__main__":
                     label="Temperature", interactive=True
                 )
                 max_tokens = gr.Slider(
-                    minimum=0, maximum=4096, step=1, value=2048,
+                    minimum=0, maximum=1024, step=1, value=256,
                     label="Max output tokens", interactive=True
                 )
                 with gr.Row():
@@ -208,7 +208,7 @@ if __name__ == "__main__":
         )
 
         clear_btn.click(
-            lambda: [None, None, "", 0.0, 2048], 
+            lambda: [None, None, "", 0.0, 256], 
             outputs=[text_input, image_input, output_text, temperature, max_tokens] 
         )
     demo.launch()
