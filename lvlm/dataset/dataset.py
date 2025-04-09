@@ -1,6 +1,7 @@
 import copy
 import json
 import os.path as osp
+from collections import defaultdict
 from PIL import Image
 
 import numpy as np
@@ -10,14 +11,12 @@ from torch.utils.data import Dataset
 
 from lvlm.dataset.template import TEMPlATE_FACTORY
 
-
 class MultiModalDataset(Dataset):
-    def __init__(self, model, data_arguments, mode):
+    def __init__(self, model, data , data_arguments, mode):
         super(MultiModalDataset, self).__init__()
         self.data_arguments = data_arguments
         self.mode = mode
-        with open(data_arguments.data_path, "r", encoding="utf-8") as f:
-            self.data = json.load(f)
+        self.data = data
 
         self.tokenizer = model.tokenizer
         self.template = TEMPlATE_FACTORY[data_arguments.conv_version]()
@@ -42,6 +41,7 @@ class MultiModalDataset(Dataset):
             tokenizer=self.tokenizer,
             mode=self.mode,
         )
+
         # print("-" * 30 + "item" + "-" * 30)
         # print("before preprocess" + "-" * 29)
         # for k, v in data_item.items():
@@ -69,7 +69,10 @@ class MultiModalDataset(Dataset):
             for filename in data_item["image3d"]:
                 image3d_path = osp.join(self.data_arguments.image3d_path, filename)
                 image3d = np.load(image3d_path)
-                image3d = self.preprocessor_image3d(image3d, mode=self.mode)
+                if self.preprocessor_image is not None:
+                    image3d = self.preprocessor_image(image3d, mode=self.mode)
+                elif self.preprocessor_image3d is not None:
+                    image3d = self.preprocessor_image3d(image3d, mode=self.mode)
                 data_dict["image3d"].append(image3d)
         else:
             data_dict["image3d"] = None
@@ -132,10 +135,34 @@ class DataCollatorForMultiModalDataset:
 
 
 def create_data_module(model, data_arguments, mode):
-    train_dataset = MultiModalDataset(model=model, data_arguments=data_arguments, mode=mode)
+    data_path=data_arguments.data_path
+    with open(data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    train_dataset = MultiModalDataset(model=model,data=data, data_arguments=data_arguments, mode=mode)
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return dict(
         train_dataset=train_dataset,
         eval_dataset=None,
         data_collator=data_collator,
     )
+
+def create_multi_data_module(model, data_arguments,ratio_dict,mode="train"):
+    data_path=data_arguments.data_path
+    with open(data_path, "r", encoding="utf-8") as f:
+        all_data = json.load(f)
+
+    task_data_map = defaultdict(list)
+    for item in all_data:
+        task = item["task"]
+        task_data_map[task].append(item)
+
+    task_loaders = {"train":[]}
+
+    for task_name, data_list in task_data_map.items():
+        dataset = MultiModalDataset(model=model, data=data_list,data_arguments=data_arguments, mode=mode)
+        dataset.sample_ratio=ratio_dict[task_name]
+        dataset.task=task_name
+        task_loaders["train"].append(dataset)
+    collator = DataCollatorForMultiModalDataset(model.tokenizer, mode=mode)
+    return task_loaders,collator
+

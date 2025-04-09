@@ -17,9 +17,7 @@ class MultiModalDataset(Dataset):
         self.data_arguments = data_arguments
         self.mode = mode
         self.image = image
-        self.prompt = "<image>\n" + prompt
-        # with open(data_arguments.data_path, "r") as f:
-        #     self.data = json.load(f)
+        self.prompt = prompt
 
         self.tokenizer = model.tokenizer
         self.template = TEMPlATE_FACTORY[data_arguments.conv_version]()
@@ -38,7 +36,6 @@ class MultiModalDataset(Dataset):
         return 1
 
     def __getitem__(self, idx):
-        # data_item = self.data[idx]
         conversations = [
             {
                 "from": "human",
@@ -132,7 +129,7 @@ def predict(prompt, image, temperature, max_token):
 
             output_ids = model.generate(
                 **batch,
-                max_length=max_token,
+                max_new_tokens=max_token,
                 do_sample=True if temperature > 0 else False,
                 num_beams=args.num_beams,
                 temperature=temperature,
@@ -147,13 +144,17 @@ def predict(prompt, image, temperature, max_token):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_dtype', type=str)
-    parser.add_argument('--conv_version', type=str)
-    parser.add_argument('--resume_from_checkpoint', type=str)
-    parser.add_argument('--output_dir', type=str)
-    parser.add_argument('--max_length', type=int)
-    parser.add_argument('--num_beams', type=int)
-    parser.add_argument('--temperature', type=int)
+    parser.add_argument("--model_dtype", type=str, default=None)
+    parser.add_argument("--data_path", type=str, default=None)
+    parser.add_argument("--conv_version", type=str, default=None)
+    parser.add_argument("--image_path", type=str, default=None)
+    parser.add_argument("--image3d_path", type=str, default=None)
+    parser.add_argument("--resume_from_checkpoint", type=str, default=None)
+    parser.add_argument("--output_dir", type=str, default=None)
+    parser.add_argument("--max_new_tokens", type=int, default=None)
+    parser.add_argument("--num_beams", type=int, default=None)
+    parser.add_argument("--temperature", type=float, default=None)
+    parser.add_argument("--batch_size", type=int, default=1)
     args = parser.parse_args()
     set_seed(42)
 
@@ -191,7 +192,7 @@ if __name__ == "__main__":
                     label="Temperature", interactive=True
                 )
                 max_tokens = gr.Slider(
-                    minimum=0, maximum=4096, step=1, value=2048,
+                    minimum=0, maximum=1024, step=1, value=256,
                     label="Max output tokens", interactive=True
                 )
                 with gr.Row():
@@ -208,7 +209,7 @@ if __name__ == "__main__":
         )
 
         clear_btn.click(
-            lambda: [None, None, "", 0.0, 2048], 
+            lambda: [None, None, "", 0.0, 256], 
             outputs=[text_input, image_input, output_text, temperature, max_tokens] 
         )
     demo.launch()
