@@ -17,14 +17,12 @@ def main(args):
             continue
         answer = "(" + choices[0] + ")"
         predict = predict.strip()
-        question_type = answer_dict["type"]
 
         correct = answer in predict
         results.append({
             "id": answer_dict["id"],
             "answer": answer,
             "predict": predict,
-            "type": question_type,
             "correct": correct,
         })
 
@@ -36,16 +34,6 @@ def main(args):
     for metric_name in metric_list:
         metric_scores = [r[metric_name] for r in results]
         print(f"{metric_name}: {sum(metric_scores) / len(metric_scores)}")
-
-    # calculate average scores by question type
-    type_list = sorted(set([r["type"] for r in results]))
-    if len(type_list) > 1:
-        for question_type in type_list:
-            print()
-            print(f"Question type: {question_type}")
-            for metric_name in metric_list:
-                metric_scores = [r[metric_name] for r in results if r["type"] == question_type]
-                print(f"{metric_name}: {sum(metric_scores) / len(metric_scores)}")
 
 
 if __name__ == "__main__":

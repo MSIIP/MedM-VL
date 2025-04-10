@@ -69,7 +69,10 @@ class MultiModalDataset(Dataset):
             for filename in data_item["image3d"]:
                 image3d_path = osp.join(self.data_arguments.image3d_path, filename)
                 image3d = np.load(image3d_path)
-                image3d = self.preprocessor_image3d(image3d, mode=self.mode)
+                if self.preprocessor_image is not None:
+                    image3d = self.preprocessor_image(image3d, mode=self.mode)
+                elif self.preprocessor_image3d is not None:
+                    image3d = self.preprocessor_image3d(image3d, mode=self.mode)
                 data_dict["image3d"].append(image3d)
         else:
             data_dict["image3d"] = None

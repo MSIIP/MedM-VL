@@ -1,0 +1,67 @@
+[
+    {
+        "id": "0",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhich category does this multi-source dermatoscopic image of common pigmented skin lesions belong to: actinic keratoses and intraepithelial carcinoma, basal cell carcinoma, benign keratosis-like lesions, dermatofibroma, melanoma, melanocytic nevi, or vascular lesions?"
+            }
+        ],
+        "image": [
+            "/mnt/nvme_share/zhux/dataset/MedMNIST/images_eval_derma/0.png"
+        ],
+        "answer": "melanocytic nevi"
+    },
+    {
+        "id": "1",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhich category does this multi-source dermatoscopic image of common pigmented skin lesions belong to: actinic keratoses and intraepithelial carcinoma, basal cell carcinoma, benign keratosis-like lesions, dermatofibroma, melanoma, melanocytic nevi, or vascular lesions?"
+            }
+        ],
+        "image": [
+            "/mnt/nvme_share/zhux/dataset/MedMNIST/images_eval_derma/1.png"
+        ],
+        "answer": "dermatofibroma"
+    },
+    {
+        "id": "2",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhich category does this multi-source dermatoscopic image of common pigmented skin lesions belong to: actinic keratoses and intraepithelial carcinoma, basal cell carcinoma, benign keratosis-like lesions, dermatofibroma, melanoma, melanocytic nevi, or vascular lesions?"
+            }
+        ],
+        "image": [
+            "/mnt/nvme_share/zhux/dataset/MedMNIST/images_eval_derma/2.png"
+        ],
+        "answer": "melanoma"
+    },
+    {
+        "id": "3",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhich category does this multi-source dermatoscopic image of common pigmented skin lesions belong to: actinic keratoses and intraepithelial carcinoma, basal cell carcinoma, benign keratosis-like lesions, dermatofibroma, melanoma, melanocytic nevi, or vascular lesions?"
+            }
+        ],
+        "image": [
+            "/mnt/nvme_share/zhux/dataset/MedMNIST/images_eval_derma/3.png"
+        ],
+        "answer": "actinic keratoses and intraepithelial carcinoma"
+    },
+    {
+        "id": "4",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhich category does this multi-source dermatoscopic image of common pigmented skin lesions belong to: actinic keratoses and intraepithelial carcinoma, basal cell carcinoma, benign keratosis-like lesions, dermatofibroma, melanoma, melanocytic nevi, or vascular lesions?"
+            }
+        ],
+        "image": [
+            "/mnt/nvme_share/zhux/dataset/MedMNIST/images_eval_derma/4.png"
+        ],
+        "answer": "melanocytic nevi"
+    }
+]

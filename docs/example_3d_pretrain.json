@@ -1,0 +1,82 @@
+[
+    {
+        "id": "report_generation_0",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nGenerate radiology report for the CT."
+            },
+            {
+                "from": "gpt",
+                "value": "Findings: Multiple venous collaterals are present in the anterior left chest wall and are associated with the anterior jugular vein at the level of the right sternoclavicular junction. Left subclavian vein collapsed (chronic occlusion pathology?). Trachea, both main bronchi are open. Calcific plaques are observed in the aortic arch. Other mediastinal main vascular structures, heart contour, size are normal. Thoracic aorta diameter is normal. Pericardial effusion-thickening was not observed. Thoracic esophagus calibration was normal and no significant tumoral wall thickening was detected. No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected. When examined in the lung parenchyma window; Linear atelectasis is present in both lung parenchyma. Subsegmental atelectasis is observed in the right middle lobe. Thickening of the bronchial wall and peribronchial budding tree-like reticulonodular densities are observed in the bilateral lower lobes. Peribronchial minimal consolidation is seen in the lower lobes in places. The findings were evaluated primarily in favor of the infectious process. The left kidney partially entering the section is atrophic. The right kidney could not be evaluated because it did not enter the section. Other upper abdominal organs included in the sections are normal. No space-occupying lesion was detected in the liver that entered the cross-sectional area. Bilateral adrenal glands were normal and no space-occupying lesion was detected. There are osteophytes with anterior extension in the thoracic vertebrae. Impression:  Multiple venous collaterals in the anterior left chest wall and collapsed appearance in the left subclavian vein (chronic occlusion?).  Thickening of the bronchial wall in both lungs.  Peribronchial reticulonodular densities in the lower lobes, minimal consolidations (infection process?).  Atelectasis in both lungs.  Thoracic spondylosis."
+            }
+        ],
+        "image3d": [
+            "train_1/train_1_a/train_1_a_1.npy"
+        ]
+    },
+    {
+        "id": "report_generation_1",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nPlease give the radiology report for the specified chest CT image."
+            },
+            {
+                "from": "gpt",
+                "value": "Findings: Multiple venous collaterals are present in the anterior left chest wall and are associated with the anterior jugular vein at the level of the right sternoclavicular junction. Left subclavian vein collapsed (chronic occlusion pathology?). Trachea, both main bronchi are open. Calcific plaques are observed in the aortic arch. Other mediastinal main vascular structures, heart contour, size are normal. Thoracic aorta diameter is normal. Pericardial effusion-thickening was not observed. Thoracic esophagus calibration was normal and no significant tumoral wall thickening was detected. No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected. When examined in the lung parenchyma window; Linear atelectasis is present in both lung parenchyma. Subsegmental atelectasis is observed in the right middle lobe. Thickening of the bronchial wall and peribronchial budding tree-like reticulonodular densities are observed in the bilateral lower lobes. Peribronchial minimal consolidation is seen in the lower lobes in places. The findings were evaluated primarily in favor of the infectious process. The left kidney partially entering the section is atrophic. The right kidney could not be evaluated because it did not enter the section. Other upper abdominal organs included in the sections are normal. No space-occupying lesion was detected in the liver that entered the cross-sectional area. Bilateral adrenal glands were normal and no space-occupying lesion was detected. There are osteophytes with anterior extension in the thoracic vertebrae. Impression:  Multiple venous collaterals in the anterior left chest wall and collapsed appearance in the left subclavian vein (chronic occlusion?).  Thickening of the bronchial wall in both lungs.  Peribronchial reticulonodular densities in the lower lobes, minimal consolidations (infection process?).  Atelectasis in both lungs.  Thoracic spondylosis."
+            }
+        ],
+        "image3d": [
+            "train_1/train_1_a/train_1_a_2.npy"
+        ]
+    },
+    {
+        "id": "report_generation_2",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nGenerate radiology report for the CT scan."
+            },
+            {
+                "from": "gpt",
+                "value": "Findings: Trachea and both main bronchi were in the midline and no obstructive pathology was observed in the lumen. In the non-contrast examination, the mediastinal could not be evaluated optimally. As far as can be seen; mediastinal main vascular structures, heart contour, size are normal. Pericardial effusion-thickening was not observed. Calcific atheroma plaque was observed in the descending aorta. Thoracic esophagus calibration was normal and no significant pathological wall thickening was detected. No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected. When examined in the lung parenchyma window; Passive atelectatic changes were observed in the right lung middle lobe medial and left lung upper lobe inferior lingular segment. Emphysematous changes are present in both lungs. Segmentary-subsegmental peribrochial minimal thickening was observed in both lungs. A millimetric nonspecific subpleural nodule was observed in the posterior segment of the right lung upper lobe. No mass lesion-active infiltration with distinguishable borders was detected in both lungs. As far as can be seen within the sections; A millimetric stone was observed in the gallbladder lumen. Minimal degenerative changes were observed in the bone structure. Impression:  Emphysematous and passive atelectatic changes in both lungs.  Minimal thickening of the segmental bronchial walls of both lungs.  Nonspecific subpleural nodule in the posterior segment of the right lung upper lobe.  Cholelithiasis.  Minimal degenerative changes in bone structure."
+            }
+        ],
+        "image3d": [
+            "train_2/train_2_a/train_2_a_1.npy"
+        ]
+    },
+    {
+        "id": "report_generation_3",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nCan you produce the radiology report for the attached chest CT image?"
+            },
+            {
+                "from": "gpt",
+                "value": "Findings: Trachea and both main bronchi were in the midline and no obstructive pathology was observed in the lumen. In the non-contrast examination, the mediastinal could not be evaluated optimally. As far as can be seen; mediastinal main vascular structures, heart contour, size are normal. Pericardial effusion-thickening was not observed. Calcific atheroma plaque was observed in the descending aorta. Thoracic esophagus calibration was normal and no significant pathological wall thickening was detected. No enlarged lymph nodes in prevascular, pre-paratracheal, subcarinal or bilateral hilar-axillary pathological dimensions were detected. When examined in the lung parenchyma window; Passive atelectatic changes were observed in the right lung middle lobe medial and left lung upper lobe inferior lingular segment. Emphysematous changes are present in both lungs. Segmentary-subsegmental peribrochial minimal thickening was observed in both lungs. A millimetric nonspecific subpleural nodule was observed in the posterior segment of the right lung upper lobe. No mass lesion-active infiltration with distinguishable borders was detected in both lungs. As far as can be seen within the sections; A millimetric stone was observed in the gallbladder lumen. Minimal degenerative changes were observed in the bone structure. Impression:  Emphysematous and passive atelectatic changes in both lungs.  Minimal thickening of the segmental bronchial walls of both lungs.  Nonspecific subpleural nodule in the posterior segment of the right lung upper lobe.  Cholelithiasis.  Minimal degenerative changes in bone structure."
+            }
+        ],
+        "image3d": [
+            "train_2/train_2_a/train_2_a_2.npy"
+        ]
+    },
+    {
+        "id": "report_generation_4",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nPlease provide the radiology report for the chest CT scan mentioned."
+            },
+            {
+                "from": "gpt",
+                "value": "Findings: Right thyroid lobe sizes increased. Evaluation of the mediastinal main vascular structures is suboptimal due to the lack of contrast, but their calibrations are normal. Calcific atheroma plaques are observed in the aorta and coronary arteries. Heart size increased. No pericardial effusion or thickness increase was observed. No pleural effusion or increased thickness was detected. No mass appearance was observed in the precardiac fat pad. In the mediastinum, a few sequelae calcific lymph nodes, the largest of which is 9 mm in the pretracheal area, and hypodense hiluses can be distinguished, were primarily evaluated in favor of reactive lymph nodes. There was no lymphadenopathy in pathological size and appearance in both axillae and retropectoral regions. Esophageal wall thickness is normal. When examined in the lung parenchyma window; Minimal bronchiectatic changes and peribronchial thickness increases are observed at the level of the hilum of both lungs. Linear densities, which may be compatible with pleuroparenchymal sequelae changes, are observed in the anterior segment of the right lung upper lobe. There is a sequela calcific pulmonary nodule in the posterobasal segment of the lower lobe of the right lung. Active infiltrative, consolidation was not detected in both lungs. Ventilation of both lungs is normal. There are pleural thickness increases in the lower lobe of the left lung, which are evaluated in favor of minimal sequelae in the posterior subpleural area. In both kidneys included in the examination, appearances evaluated in favor of multiple cysts are observed. In the vertebral column, osteophytes are observed in the anterior of the vertebral corpus, which are fused with each other. No fracture, lytic-sclerotic lesion was detected. Mild scoliosis with left opening is observed in the thoracic region. Impression:  Calcific atheromatous plaques in coronary arteries.  Slight increase in heart size.  Several reactive-looking lymph nodes in the mediastinal area.  Minimal bronchiectatic changes and mild peribronchial thickness increases.  Sequelae of fibrotic densities in both lungs."
+            }
+        ],
+        "image3d": [
+            "train_3/train_3_a/train_3_a_1.npy"
+        ]
+    }
+]

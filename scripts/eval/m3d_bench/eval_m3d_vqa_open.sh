@@ -1,11 +1,11 @@
 export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
-MODEL_PATH="/hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-3B-en"
+MODEL_PATH="work_dirs/MedM-VL-CT-3B-en"
 
 CUDA_VISIBLE_DEVICES=2 python lvlm/inference.py \
     --model_dtype bfloat16 \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/m3d/m3d_vqa_open.json \
-    --conv_version llama3 \
+    --conv_version qwen2 \
     --image3d_path /hdd/shiym/datasets/medical-image-analysis/M3D/npys_256 \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \

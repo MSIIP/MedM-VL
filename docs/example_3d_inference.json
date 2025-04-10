@@ -1,0 +1,67 @@
+[
+    {
+        "id": "multiple_choice_0_0",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\n Which of the following findings are present in the right lung of this Chest CT image? (a) Normal aeration (b) A few millimetric nonspecific nodules (c) Enlarged lymph nodes (d) Infiltrative lesion"
+            }
+        ],
+        "image3d": [
+            "valid_1/valid_1_a/valid_1_a_1.npy"
+        ],
+        "answer": "(b) A few millimetric nonspecific nodules"
+    },
+    {
+        "id": "multiple_choice_0_1",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nWhat is the status of the lung recessions observed in the Chest CT image? (a) Severe recessions (b) Mild recessions (c) Normal lung tissue (d) No recessions"
+            }
+        ],
+        "image3d": [
+            "valid_1/valid_1_a/valid_1_a_1.npy"
+        ],
+        "answer": "(b) Mild recessions"
+    },
+    {
+        "id": "multiple_choice_0_2",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nIs the aeration of the lung parenchyma normal in this Chest CT image? (a) No, reduced aeration (b) Yes, normal aeration (c) No, increased aeration (d) No, no aeration"
+            }
+        ],
+        "image3d": [
+            "valid_1/valid_1_a/valid_1_a_1.npy"
+        ],
+        "answer": "(b) Yes, normal aeration"
+    },
+    {
+        "id": "multiple_choice_1_0",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\n Which of the following is true about the lung parenchyma in this Chest CT image? (a) Normal (b) A few millimetric nonspecific nodules and mild recessions (c) No abnormalities (d) Infiltrative lesion"
+            }
+        ],
+        "image3d": [
+            "valid_1/valid_1_a/valid_1_a_2.npy"
+        ],
+        "answer": "(b) A few millimetric nonspecific nodules and mild recessions"
+    },
+    {
+        "id": "multiple_choice_1_1",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image3d>\nWhat is the appearance of the right lung in this Chest CT image? (a) Normal (b) A few millimetric nonspecific nodules and mild recessions (c) Enlarged lymph nodes (d) Space-occupying lesion"
+            }
+        ],
+        "image3d": [
+            "valid_1/valid_1_a/valid_1_a_2.npy"
+        ],
+        "answer": "(b) A few millimetric nonspecific nodules and mild recessions"
+    }
+]
