@@ -1,4 +1,5 @@
 import monai.transforms as mtf
+import numpy as np
 import torch
 from transformers import AutoConfig, AutoModel
 
@@ -18,6 +19,8 @@ class Image3DProcessor:
     def __init__(self):
         self.transform_train = mtf.Compose(
             [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
                 mtf.RandRotate90(prob=0.5, spatial_axes=(1, 2)),
                 mtf.RandFlip(prob=0.10, spatial_axis=0),
                 mtf.RandFlip(prob=0.10, spatial_axis=1),
@@ -27,9 +30,20 @@ class Image3DProcessor:
                 mtf.ToTensor(dtype=torch.float),
             ]
         )
-        self.transform_val = mtf.Compose([mtf.ToTensor(dtype=torch.float)])
+        self.transform_val = mtf.Compose(
+            [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
+                mtf.ToTensor(dtype=torch.float),
+            ]
+        )
 
     def __call__(self, image3d, mode):
+        image3d = image3d.astype(np.float32) / 255.0
+        image3d = image3d[np.newaxis, ...]
+        image3d = image3d - image3d.min()
+        image3d = image3d / np.clip(image3d.max(), a_min=1e-8, a_max=None)
+
         if mode == "train":
             image3d = self.transform_train(image3d)
         else:

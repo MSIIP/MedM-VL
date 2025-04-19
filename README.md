@@ -10,7 +10,8 @@ MedM-VL focuses on **small-scale** medical LVLMs, designed for **direct deployme
 
 
 ## :newspaper: News
-+ **[2025.04.10]**: The model weights (v1.0) have been uploaded to HuggingFace.
+
++ **[2025.04.10]**: The model weights (v1.0) have been uploaded to Hugging Face.
   + [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en)
   + [shiym2000/MedM-VL-CT-Chest-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en)
   + [shiym2000/MedM-CLIP-CT · Hugging Face](https://huggingface.co/shiym2000/MedM-CLIP-CT)
@@ -20,18 +21,14 @@ MedM-VL focuses on **small-scale** medical LVLMs, designed for **direct deployme
 
 
 ## :sparkles: Features
-The hyperlink points to the model weights on HuggingFace.
 
-<details>
-<summary>MedM-VL (v1.0: English, single image input)</summary>
-
-+ [MedM-VL-2D-3B-en](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en): A medical LVLM trained on **2D** medical images and **English** medical texts.
-+ [MedM-VL-CT-Chest-3B-en](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en): A medical LVLM trained on **3D** chest CT volumes and **English** medical texts.
-
-</details>
+MedM-VL (v1.0: single image input, more details on Hugging Face)
++ [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en): Trained on **2D** medical images and **English** medical texts.
++ [shiym2000/MedM-VL-CT-Chest-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en): Trained on **3D** chest CT volumes and **English** medical texts.
 
 
 ## :package: Installation
+
 ``` bash
 # 1. clone and navigate
 git clone https://github.com/MSIIP/MedM-VL.git
@@ -73,14 +70,14 @@ bash scripts/train/MedM-VL-CT-Chest/finetune_en.sh
 
 ``` bash
 # For 2D medical LVLMs
-# 1. download weights from HuggingFace
+# 1. download weights from Hugging Face
 pip install -U huggingface_hub
 huggingface-cli download --resume-download shiym2000/MedM-VL-2D-3B-en --local-dir work_dirs/MedM-VL-2D-3B-en
 # 2. fine-tune using LoRA (annotation format: docs/example_2d_finetune.json)
 bash scripts/train/finetune_2d.sh
 
 # For 3D medical LVLMs
-# 1. download weights from HuggingFace
+# 1. download weights from Hugging Face
 pip install -U huggingface_hub
 huggingface-cli download --resume-download shiym2000/MedM-VL-CT-Chest-3B-en --local-dir work_dirs/MedM-VL-CT-Chest-3B-en
 # 2. fine-tune using LoRA (annotation format: docs/example_3d_finetune.json)
@@ -113,6 +110,7 @@ bash scripts/playground.sh
 
 
 ## :robot: Model Zoo
+
 <table>
   <tr align="center">
     <td><b>Encoder</b></td>
@@ -142,6 +140,7 @@ bash scripts/playground.sh
 
 
 ## :book: Citation
+
 ``` bibtex
 @article{shi2025medm,
   title={MedM-VL: What Makes a Good Medical LVLM?},
@@ -155,5 +154,4 @@ bash scripts/playground.sh
 ## :heart: Acknowledgements
 
 We would like to express our gratitude to the following resources:
-
 + [**TinyLLaVA_Factory**](https://github.com/TinyLLaVA/TinyLLaVA_Factory) - An open-source modular codebase for small-scale large multimodal models (LMMs).

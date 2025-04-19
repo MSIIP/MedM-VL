@@ -4,7 +4,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero2.json \
     --data_path docs/example_3d_finetune.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_32_256_256_raw/train \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
     --training_recipe common \
     --tune_type_llm lora \
     --llm_lora_r 128 \

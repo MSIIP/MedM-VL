@@ -17,14 +17,14 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --connector_image3d_name mlp2x_gelu \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/train_rg.json \
     --conv_version pretrain_image3d \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_32_256_256_raw/train \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
     --training_recipe common \
     --tune_type_llm frozen \
     --tune_type_encoder_image3d frozen \
     --tune_type_connector_image3d full \
     --bf16 True \
     --gradient_checkpointing True \
-    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-pretrain-m3dclip \
+    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-m3dclip-pretrain \
     --dataloader_num_workers 8 \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \

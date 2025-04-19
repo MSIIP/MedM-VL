@@ -32,8 +32,13 @@ def medmclip_load_config(model_arguments):
 
 class Image3DProcessor:
     def __init__(self):
+        self.mean = 55.6982188356434
+        self.std = 66.1943479570918
+
         self.transform_train = mtf.Compose(
             [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
                 mtf.RandRotate90(prob=0.5, spatial_axes=(1, 2)),
                 mtf.RandFlip(prob=0.10, spatial_axis=0),
                 mtf.RandFlip(prob=0.10, spatial_axis=1),
@@ -43,9 +48,18 @@ class Image3DProcessor:
                 mtf.ToTensor(dtype=torch.float),
             ]
         )
-        self.transform_val = mtf.Compose([mtf.ToTensor(dtype=torch.float)])
+        self.transform_val = mtf.Compose(
+            [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
+                mtf.ToTensor(dtype=torch.float),
+            ]
+        )
 
     def __call__(self, image3d, mode):
+        image3d = (image3d - self.mean) / self.std
+        image3d = image3d[np.newaxis, ...]
+
         if mode == "train":
             image3d = self.transform_train(image3d)
         else:

@@ -32,6 +32,8 @@ class ImageProcessor:
 
         self.transform_3d_train = mtf.Compose(
             [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
                 mtf.RandRotate90(prob=0.5, spatial_axes=(1, 2)),
                 mtf.RandFlip(prob=0.10, spatial_axis=0),
                 mtf.RandFlip(prob=0.10, spatial_axis=1),
@@ -41,13 +43,20 @@ class ImageProcessor:
                 mtf.ToTensor(dtype=torch.float),
             ]
         )
-        self.transform_3d_val = mtf.Compose([mtf.ToTensor(dtype=torch.float)])
+        self.transform_3d_val = mtf.Compose(
+            [
+                mtf.CropForeground(),
+                mtf.Resize(spatial_size=[32, 256, 256], mode="bilinear"),
+                mtf.ToTensor(dtype=torch.float),
+            ]
+        )
 
     def __call__(self, image, mode):
         if isinstance(image, Image.Image):  # process 2D image
             image = self.processor(image, return_tensors="pt")
             image = image["pixel_values"][0]  # [3, H, W]
-        elif isinstance(image, np.ndarray):  # process 3D image
+        elif isinstance(image, np.ndarray):  # process 3D image: [D, H, W], [0, 255]
+            image = image[np.newaxis, ...]
             if mode == "train":
                 image = self.transform_3d_train(image)
             else:

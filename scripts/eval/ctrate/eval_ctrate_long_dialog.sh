@@ -6,7 +6,7 @@ CUDA_VISIBLE_DEVICES=1 python lvlm/inference.py \
     --model_dtype bfloat16 \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/valid_long_dialog.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_32_256_256_raw/valid \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/valid \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \
     --max_new_tokens 256 \

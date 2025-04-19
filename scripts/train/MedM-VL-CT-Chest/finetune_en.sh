@@ -4,15 +4,15 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/train_vqa.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_32_256_256_raw/train \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
     --training_recipe common \
     --tune_type_llm full \
     --tune_type_encoder_image full \
     --tune_type_connector_image full \
     --bf16 True \
     --gradient_checkpointing True \
-    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-finetune \
-    --resume_from_checkpoint /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-pretrain \
+    --output_dir /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-attn-finetune \
+    --resume_from_checkpoint /hdd/shiym/work_dirs/MedM-VL/MedM-VL-CT-Chest-3B-en-attn-pretrain \
     --dataloader_num_workers 8 \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \
