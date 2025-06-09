@@ -1,0 +1,82 @@
+[
+    {
+        "id": "000021315",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "Render a clear and concise summary of the photo.\n<image>"
+            },
+            {
+                "from": "gpt",
+                "value": "sandals in the children's shoes 2019 new fashion flower children girls summer flat bottom slippers tide breath comfortable"
+            }
+        ],
+        "image": [
+            "00002/000021315.jpg"
+        ]
+    },
+    {
+        "id": "001799297",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "Write a terse but informative summary of the picture.\n<image>"
+            },
+            {
+                "from": "gpt",
+                "value": "a hand wearing bracelet set with gold and cowry shell charms"
+            }
+        ],
+        "image": [
+            "00179/001799297.jpg"
+        ]
+    },
+    {
+        "id": "004511940",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nProvide a brief description of the given image."
+            },
+            {
+                "from": "gpt",
+                "value": "soccer player kicks the ball on the field during the uefa soccer match between belgium and croatia"
+            }
+        ],
+        "image": [
+            "00451/004511940.jpg"
+        ]
+    },
+    {
+        "id": "001036079",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nGive a short and clear explanation of the subsequent image."
+            },
+            {
+                "from": "gpt",
+                "value": "six stages flow diagram for powerpoint"
+            }
+        ],
+        "image": [
+            "00103/001036079.jpg"
+        ]
+    },
+    {
+        "id": "000505088",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nProvide a brief description of the given image."
+            },
+            {
+                "from": "gpt",
+                "value": "an olive tree branch with leaves and flowers on its branches person displayed on a wall"
+            }
+        ],
+        "image": [
+            "00050/000505088.jpg"
+        ]
+    }
+]

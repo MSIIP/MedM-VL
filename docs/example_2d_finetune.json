@@ -1,0 +1,171 @@
+[
+    {
+        "id": "27374136_fig01",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhat is the purpose of the flow diagram?"
+            },
+            {
+                "from": "gpt",
+                "value": "The purpose of the flow diagram is to illustrate the lung cancer screening process implemented by the local government of Yokohama City. It shows the steps involved in the screening, from the primary examination to the follow-up examinations for participants with positive results."
+            },
+            {
+                "from": "human",
+                "value": "What is the primary screening method?"
+            },
+            {
+                "from": "gpt",
+                "value": "The primary screening method involves chest X-ray examinations, which can be either indirect or direct radiographs. In some cases, an additional sputum cytology test may also be performed."
+            },
+            {
+                "from": "human",
+                "value": "What happens if a participant has positive results in the primary screening?"
+            },
+            {
+                "from": "gpt",
+                "value": "If a participant has positive results in the primary screening, they are asked to undergo work-up examinations. These may include a chest X-ray with direct radiograph, chest computed tomography (CT), and bronchoscopy to further investigate the findings and determine if lung cancer is present."
+            }
+        ],
+        "image": [
+            "/hdd/common/datasets/medical-image-analysis/PMC-15M/images/27374136_fig01.jpg"
+        ]
+    },
+    {
+        "id": "31312549_FIG1",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhat is the arrowhead pointing to?"
+            },
+            {
+                "from": "gpt",
+                "value": "The arrowhead in the computed tomography (CT) image of the head is pointing to a pituitary macroadenoma."
+            },
+            {
+                "from": "human",
+                "value": "What is a pituitary macroadenoma?"
+            },
+            {
+                "from": "gpt",
+                "value": "A pituitary macroadenoma is a benign (non-cancerous) tumor that arises from the pituitary gland, which is a small, pea-sized gland located at the base of the brain. The pituitary gland is responsible for producing and releasing various hormones that regulate many essential functions in the body. Macroadenomas are larger than 1 centimeter in diameter, and they can cause various symptoms depending on their size and location. These symptoms may include hormonal imbalances, vision problems, headaches, and other neurological issues."
+            },
+            {
+                "from": "human",
+                "value": "How is it diagnosed?"
+            },
+            {
+                "from": "gpt",
+                "value": "A pituitary macroadenoma is typically diagnosed through a combination of imaging studies, such as computed tomography (CT) scans or magnetic resonance imaging (MRI), and blood tests to assess hormone levels. The imaging studies help visualize the tumor and determine its size and location, while blood tests can identify any hormonal imbalances that may be caused by the tumor. In some cases, additional tests or procedures may be needed to confirm the diagnosis and determine the best course of treatment. It is important to consult a healthcare professional for a thorough evaluation and proper diagnosis."
+            }
+        ],
+        "image": [
+            "/hdd/common/datasets/medical-image-analysis/PMC-15M/images/31312549_FIG1.jpg"
+        ]
+    },
+    {
+        "id": "30921228_F2",
+        "image": [
+            "/hdd/common/datasets/medical-image-analysis/PMC-15M/images/30921228_F2.jpg"
+        ],
+        "domain": {
+            "chest_xray": false,
+            "mri": false,
+            "ct_scan": false,
+            "histology": false,
+            "gross": true
+        },
+        "conversations": [
+            {
+                "from": "human",
+                "value": "What is the color of the tumor?\n<image>"
+            },
+            {
+                "from": "gpt",
+                "value": "The tumor appears to be whitish in color."
+            },
+            {
+                "from": "human",
+                "value": "How big is the tumor?"
+            },
+            {
+                "from": "gpt",
+                "value": "The tumor is approximately 1.8 cm in size."
+            },
+            {
+                "from": "human",
+                "value": "What is the shape of the tumor?"
+            },
+            {
+                "from": "gpt",
+                "value": "The tumor is described as nodular, which means it has a rounded or irregular shape with a somewhat lumpy or bumpy surface."
+            }
+        ],
+        "task": "instruct",
+        "data_source": "llavamed"
+    },
+    {
+        "id": "25196350_Fig3",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhat type of staining is used in the image?"
+            },
+            {
+                "from": "gpt",
+                "value": "The image uses Nissl staining, which is a technique used to visualize the distribution of Nissl bodies in the cell."
+            },
+            {
+                "from": "human",
+                "value": "What are the arrows pointing to?"
+            },
+            {
+                "from": "gpt",
+                "value": "The arrows in the image are pointing to Nissl bodies. Nissl bodies are structures found within the cell body of neurons and are composed of rough endoplasmic reticulum and free ribosomes. They are involved in protein synthesis and are particularly prominent in neurons due to their high metabolic activity."
+            },
+            {
+                "from": "human",
+                "value": "What is the effect of UC-MSC administration on the spinal cord?"
+            },
+            {
+                "from": "gpt",
+                "value": "The image suggests that the administration of UC-MSCs (umbilical cord-derived mesenchymal stem cells) has a positive effect on the spinal cord by decreasing irradiation-induced histological damage. This implies that UC-MSC treatment may help protect the spinal cord from the harmful effects of radiation exposure, potentially promoting tissue repair and recovery."
+            }
+        ],
+        "image": [
+            "/hdd/common/datasets/medical-image-analysis/PMC-15M/images/25196350_Fig3.jpg"
+        ]
+    },
+    {
+        "id": "35328158_diagnostics-12-00605-f004",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nWhat is the main focus of the image?"
+            },
+            {
+                "from": "gpt",
+                "value": "The main focus of the image is the intervertebral discs (IVDs) in the spine, particularly in relation to the vertebral bodies treated with kyphoplasty. The image shows sagittal TSE MR images and corresponding color-coded T2 maps of the IVDs for two different patients, one female and one male."
+            },
+            {
+                "from": "human",
+                "value": "What are the differences between the upper intervertebral discs?"
+            },
+            {
+                "from": "gpt",
+                "value": "The image highlights visible differences between the upper intervertebral discs adjacent to the vertebral bodies after kyphoplasty (marked with *) and those that are nonadjacent (marked with **). The T2 values within the IVDs are represented by the color-coded map, which can help visualize and compare the differences in the discs' properties."
+            },
+            {
+                "from": "human",
+                "value": "What does the arrow indicate?"
+            },
+            {
+                "from": "gpt",
+                "value": "The arrow in the image is pointing to the vertebral body that has been treated with kyphoplasty. Kyphoplasty is a minimally invasive procedure used to treat vertebral compression fractures, which involves injecting a special cement into the affected vertebra to stabilize and restore its height."
+            }
+        ],
+        "image": [
+            "/hdd/common/datasets/medical-image-analysis/PMC-15M/images/35328158_diagnostics-12-00605-f004.jpg"
+        ]
+    }
+]

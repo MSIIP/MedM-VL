@@ -1,9 +1,9 @@
 export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
-deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
+deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/unimed/train_unimed.json \
-    --conv_version llama3 \
+    --conv_version qwen2 \
     --image_path / \
     --training_recipe common \
     --tune_type_llm full \
@@ -17,7 +17,7 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \
     --num_train_epochs 3 \
-    --per_device_train_batch_size 8 \
+    --per_device_train_batch_size 16 \
     --gradient_accumulation_steps 4 \
     --learning_rate 2e-5 \
     --weight_decay 0.0 \

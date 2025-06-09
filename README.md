@@ -1,31 +1,34 @@
-# MedM-VL: Large Vision-Language Models for Medical Image Analysis
+# MedM-VL: What Makes a Good Medical LVLM?
+
+[![arXiv](https://img.shields.io/badge/Arxiv-2504.04323-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2504.04323) [![hf_space](https://img.shields.io/badge/🤗-%20Open%20In%20HF-blue.svg)](https://huggingface.co/collections/shiym2000/medm-vl-67f739e50d344d712eb7b010) [![License](https://img.shields.io/badge/License-Apache%202.0-yellow)](./LICENSE)
 
 ![architecture](./assets/architecture.png)
-MedM-VL is a series of medical large vision-language models (LVLMs), which can be used to directly perform simple general medical tasks, or serve as foundation models for fine-tuning specialized medical LVLMs. 
 
-In this project, we focus on supporting **small-scale** LVLMs, making it easier to **fine-tune** for downstream tasks and **deploy** in real-world scenarios.
+MedM-VL is a **modular**, LLaVA-based codebase for medical LVLMs, supporting flexible customization of encoders, connectors, and LLMs.
+
+MedM-VL focuses on **small-scale** medical LVLMs, designed for **direct deployment** in real-world medical scenarios or **efficient fine-tuning** on downstream tasks.
+
 
 ## :newspaper: News
-+ **[2024.12.19]**: The model weights (v1.0) have been uploaded to HuggingFace.
-    + [shiym2000/MedM-VL-CT-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-3B-en)
-    + [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en)
+
++ **[2025.04.10]**: The model weights (v1.0) have been uploaded to Hugging Face.
+  + [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en)
+  + [shiym2000/MedM-VL-CT-Chest-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en)
+  + [shiym2000/MedM-CLIP-CT · Hugging Face](https://huggingface.co/shiym2000/MedM-CLIP-CT)
++ **[2025.04.06]**: The technical report has been released on arXiv.
+  + [\[2504.04323\] MedM-VL: What Makes a Good Medical LVLM?](https://arxiv.org/abs/2504.04323)
 + **[2024.12.19]**: The complete code has been released on GitHub.
 
 
 ## :sparkles: Features
-The hyperlink points to the model weights on HuggingFace.
 
-<details>
-<summary>MedM-VL (v1.0: English, single image input)</summary>
-
-+ [MedM-VL-CT-3B-en](https://huggingface.co/shiym2000/MedM-VL-CT-3B-en): A medical LVLM, trained on English data, accepts text and a single 3D CT volume as input, and text-based results as output, enabling tasks such as report generation and medical VQA.
-+ [MedM-VL-2D-3B-en](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en): A medical LVLM, trained on English data, accepts text and a single 2D medical image as input, and text-based results as output. enabling tasks such as report generation, medical VQA, referring expression comprehension, referring expression generation and image classification.
-
-
-</details>
+MedM-VL (v1.0: single image input, more details on Hugging Face)
++ [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en): Trained on **2D** medical images and **English** medical texts.
++ [shiym2000/MedM-VL-CT-Chest-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en): Trained on **3D** chest CT volumes and **English** medical texts.
 
 
 ## :package: Installation
+
 ``` bash
 # 1. clone and navigate
 git clone https://github.com/MSIIP/MedM-VL.git
@@ -39,20 +42,24 @@ pip install flash-attn --no-build-isolation
 ```
 
 
-## :wrench: Getting Started
-
-Here are some examples of `MedM-VL-CT-3B-en` in different scenarios. 
+## :rocket: Getting Started
 
 If you are confused about some parameters during usage, please refer to [Parameter Interpretation](docs/param_interpretation.md).
 
 ### 1. Train a general medical LVLM from scratch
 
 ``` bash
-# 1. pre-train (annotation format: docs/example_pretrain.json)
-bash scripts/train/MedM-VL-CT-3B-en/pretrain.sh
+# For 2D medical LVLMs
+# 1. pre-train (annotation format: docs/example_2d_pretrain.json)
+bash scripts/train/MedM-VL-2D/pretrain_en.sh
+# 2. fine-tune (annotation format: docs/example_2d_finetune.json)
+bash scripts/train/MedM-VL-2D/finetune_en.sh
 
-# 2. fine-tune (annotation format: docs/example_finetune.json)
-bash scripts/train/MedM-VL-CT-3B-en/finetune.sh
+# For 3D medical LVLMs
+# 1. pre-train (annotation format: docs/example_3d_pretrain.json)
+bash scripts/train/MedM-VL-CT-Chest/pretrain_en.sh
+# 2. fine-tune (annotation format: docs/example_3d_finetune.json)
+bash scripts/train/MedM-VL-CT-Chest/finetune_en.sh
 
 # In fact, there is no difference in the annotation file format between
 # pre-training and fine-tuning. The former is from image-text pairs
@@ -62,20 +69,33 @@ bash scripts/train/MedM-VL-CT-3B-en/finetune.sh
 ### 2. Fine-tune a specialized medical LVLM with pre-trained weights
 
 ``` bash
-# 1. download weights from HuggingFace
+# For 2D medical LVLMs
+# 1. download weights from Hugging Face
 pip install -U huggingface_hub
-huggingface-cli download --resume-download shiym2000/MedM-VL-CT-3B-en --local-dir work_dirs/MedM-VL-CT-3B-en
+huggingface-cli download --resume-download shiym2000/MedM-VL-2D-3B-en --local-dir work_dirs/MedM-VL-2D-3B-en
+# 2. fine-tune using LoRA (annotation format: docs/example_2d_finetune.json)
+bash scripts/train/finetune_2d.sh
 
-# 2. fine-tune using LoRA (annotation format: docs/example_finetune.json)
+# For 3D medical LVLMs
+# 1. download weights from Hugging Face
+pip install -U huggingface_hub
+huggingface-cli download --resume-download shiym2000/MedM-VL-CT-Chest-3B-en --local-dir work_dirs/MedM-VL-CT-Chest-3B-en
+# 2. fine-tune using LoRA (annotation format: docs/example_3d_finetune.json)
+bash scripts/train/finetune_3d.sh
+
 # You can choose full or LoRA fine-tuning based on available GPU memory.
-bash scripts/train/finetune.sh
 ```
 
 ### 3. Inference
 
 ``` bash
-# inference (annotation format: docs/example_inference.json)
-bash scripts/eval/inference.sh
+# For 2D medical LVLMs
+# inference (annotation format: docs/example_2d_inference.json)
+bash scripts/eval/inference_2d.sh
+
+# For 3D medical LVLMs
+# inference (annotation format: docs/example_3d_inference.json)
+bash scripts/eval/inference_3d.sh
 
 # Compared to `finetune.json``, `conversations` in `inference.json` lacks
 # the final response, which will be generated by the model.
@@ -88,7 +108,9 @@ bash scripts/eval/inference.sh
 bash scripts/playground.sh
 ```
 
+
 ## :robot: Model Zoo
+
 <table>
   <tr align="center">
     <td><b>Encoder</b></td>
@@ -97,157 +119,39 @@ bash scripts/playground.sh
   </tr>
   <tr valign="top">
     <td>
-        <li> CLIP (2021) </li>
-        <li> SigLIP (2023) </li>
-        <li> M3D-CLIP (2023) </li>
+      <li><a href="https://arxiv.org/abs/2103.00020"> CLIP (2021) </a></li>
+      <li><a href="https://arxiv.org/abs/2303.15343"> SigLIP (2023) </a></li>
+      <li><a href="https://arxiv.org/abs/2404.00578"> M3D-CLIP (2023) </a></li>
+      <li><a href="https://huggingface.co/collections/shiym2000/medm-clip-67f7afd8a3dbcff656466805"> MedM-CLIP <a></li>
     </td>
     <td>
-        <li> MLP </li>
-        <li> Spatial Pooling </li>
+      <li> MLP </li>
+      <li> Spatial Pooling </li>
+      <li> Attention Pooling </li>
     </td>
     <td>
-        <li> Phi-2 (2023) </li>
-        <li> Phi-3 (2024) </li>
-        <li> Qwen2.5 (2024) </li>
-        <li> Llama-3.2 (2024) </li>
+      <li><a href="https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models/"> Phi-2 (2023) </a></li>
+      <li><a href="https://arxiv.org/abs/2404.14219"> Phi-3 (2024) </a></li>
+      <li><a href="https://arxiv.org/abs/2412.15115"> Qwen2.5 (2024) </a></li>
+      <li><a href="https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/"> Llama-3.2 (2024) </a></li>
     </td>
   </tr>
 </table>
 
 
-## :page_with_curl: Evaluation Results
+## :book: Citation
 
-### 1. M3D-Bench
-
-<table>
-  <tr>
-    <td rowspan="2"> Method </td>
-    <td align="center" colspan="4"> Report Generation </td>
-    <td align="center" colspan="5"> Medical VQA </td>
-  </tr>
-  <tr align="center">
-    <td> BLEU </td>
-    <td> ROUGE </td>
-    <td> METEOR </td>
-    <td> BERT-Score </td>
-    <td> Accuracy </td>
-    <td> BLEU </td>
-    <td> ROUGE </td>
-    <td> METEOR </td>
-    <td> BERT-Score </td>
-  </tr>
-  <tr>
-    <td> RadFM </td>
-    <td align="center"> 12.23 </td>
-    <td align="center"> 16.49 </td>
-    <td align="center"> 11.57 </td>
-    <td align="center"> 87.93 </td>
-    <td align="center"> 19.79 </td>
-    <td align="center"> 16.39 </td>
-    <td align="center"> 26.13 </td>
-    <td align="center"> 21.33 </td>
-    <td align="center"> 88.72 </td>
-  </tr>
-  <tr>
-    <td> M3D-LaMed </td>
-    <td align="center"> 15.15 </td>
-    <td align="center"> 19.55 </td>
-    <td align="center"> 14.38 </td>
-    <td align="center"> 88.46 </td>
-    <td align="center"> 75.78 </td>
-    <td align="center"> 49.38 </td>
-    <td align="center"> 52.39 </td>
-    <td align="center"> 33.58 </td>
-    <td align="center"> 91.53 </td>
-  </tr>
-  <tr>
-    <td> MedM-VL-CT-3B-en </td>
-    <td align="center"> <b>49.81</b> </td>
-    <td align="center"> <b>52.45</b> </td>
-    <td align="center"> <b>49.27</b> </td>
-    <td align="center"> <b>90.38</b> </td>
-    <td align="center"> <b>80.12</b> </td>
-    <td align="center"> <b>56.56</b> </td>
-    <td align="center"> <b>59.96</b> </td>
-    <td align="center"> <b>39.75</b> </td>
-    <td align="center"> <b>92.85</b> </td>
-  </tr>
-</table>
-
-### 2. Uni-Med
-
-<table>
-  <tr>
-    <td align="center"> Method </td>
-    <td align="center"> medmnist_derma </td>
-    <td align="center"> medmnist_organs </td>
-    <td align="center"> medpix </td>
-    <td align="center"> mimic </td>
-    <td align="center"> pathvqa </td>
-    <td align="center"> samed_identify </td>
-    <td align="center"> samed_refer </td>
-    <td align="center"> slake_identify </td>
-    <td align="center"> slake_refer </td>
-    <td align="center"> slakevqa </td>
-  </tr>
-  <tr>
-    <td> Med-Flamingo </td>
-    <td align="center"> 1.15 </td>
-    <td align="center"> 8.90 </td>
-    <td align="center"> 8.14 </td>
-    <td align="center"> 23.25 </td>
-    <td align="center"> 33.38 </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> 21.51 </td>
-  </tr>
-  <tr>
-    <td> RadFM </td>
-    <td align="center"> 5.14 </td>
-    <td align="center"> 18.90 </td>
-    <td align="center"> - </td>
-    <td align="center"> 6.81 </td>
-    <td align="center"> 24.83 </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> - </td>
-    <td align="center"> 81.66 </td>
-  </tr>
-  <tr>
-    <td> LLaVA-Med </td>
-    <td align="center"> 25.84 </td>
-    <td align="center"> 66.80 </td>
-    <td align="center"> <b>15.11</b> </td>
-    <td align="center"> 20.43 </td>
-    <td align="center"> 37.79 </td>
-    <td align="center"> 45.83 </td>
-    <td align="center"> 8.64 </td>
-    <td align="center"> 27.21 </td>
-    <td align="center"> 4.07 </td>
-    <td align="center"> 33.69 </td>
-  </tr>
-  <tr>
-    <td> MedM-VL-2D-3B-en </td>
-    <td align="center"> <b>85.49</b> </td>
-    <td align="center"> <b>80.68</b> </td>
-    <td align="center"> 14.45 </td>
-    <td align="center"> <b>25.50</b> </td>
-    <td align="center"> <b>64.06</b> </td>
-    <td align="center"> <b>74.11</b> </td>
-    <td align="center"> <b>26.42</b> </td>
-    <td align="center"> <b>82.94</b> </td>
-    <td align="center"> <b>33.51</b> </td>
-    <td align="center"> <b>85.86</b> </td>
-  </tr>
-</table>
+``` bibtex
+@article{shi2025medm,
+  title={MedM-VL: What Makes a Good Medical LVLM?},
+  author={Shi, Yiming and Yang, Shaoshuai and Zhu, Xun and Wang, Haoyu and Li, Miao and Wu, Ji},
+  journal={arXiv preprint arXiv:2504.04323},
+  year={2025}
+}
+```
 
 
 ## :heart: Acknowledgements
 
 We would like to express our gratitude to the following resources:
-
 + [**TinyLLaVA_Factory**](https://github.com/TinyLLaVA/TinyLLaVA_Factory) - An open-source modular codebase for small-scale large multimodal models (LMMs).
-+ [**M3D**](https://github.com/BAAI-DCAI/M3D) - Pioneering and comprehensive series of work on the multi-modal large language model for 3D medical analysis.

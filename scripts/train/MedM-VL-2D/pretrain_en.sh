@@ -1,16 +1,16 @@
 export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
-deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
+deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed scripts/train/utils/zero3.json \
     --cache_dir_hf /mnt/nfs_share/shiym/ckpts/cache_dir_hf \
-    --llm_type llama3 \
-    --llm_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --llm_type qwen2 \
+    --llm_name_or_path Qwen/Qwen2.5-3B-Instruct \
     --llm_max_length 2048 \
     --llm_padding_side right \
     --llm_attn_implementation flash_attention_2 \
     --tokenizer_use_fast False \
     --encoder_image_type siglip \
-    --encoder_image_name_or_path google/siglip-so400m-patch14-384 \
+    --encoder_image_name_or_path google/siglip-base-patch16-256-multilingual \
     --encoder_image_select_layer -1 \
     --encoder_image_select_feature cls_patch \
     --connector_image_type mlp \
@@ -29,7 +29,7 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --dataloader_pin_memory True \
     --dataloader_persistent_workers True \
     --num_train_epochs 1 \
-    --per_device_train_batch_size 32 \
+    --per_device_train_batch_size 64 \
     --gradient_accumulation_steps 2 \
     --learning_rate 1e-3 \
     --weight_decay 0.0 \

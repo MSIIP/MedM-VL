@@ -4,14 +4,14 @@
 + `common`
 
 ## 2. LLM and Template
-| llm_name_or_path                     | llm_type | llm_padding_side | conv_version                       |
-| ------------------------------------ | -------- | ---------------- | ---------------------------------- |
-| `microsoft/phi-2`                    | `phi`    | `right`          | `pretrain/pretrain_image3d/phi`    |
-| `microsoft/Phi-3-mini-128k-instruct` | `phi3`   | `right`          | `pretrain/pretrain_image3d/phi3`   |
-| `meta-llama/Llama-3.2-3B-Instruct`   | `llama3` | `right`          | `pretrain/pretrain_image3d/llama3` |
-| `Qwen/Qwen2.5-3B-Instruct`           | `qwen2`  | `right`          | `pretrain/pretrain_image3d/qwen2`  |
+| llm_name_or_path                     | llm_type | conv_version (finetune) |
+| ------------------------------------ | -------- | ----------------------- |
+| `microsoft/phi-2`                    | `phi`    | `phi`                   |
+| `microsoft/Phi-3-mini-128k-instruct` | `phi3`   | `phi3`                  |
+| `meta-llama/Llama-3.2-3B-Instruct`   | `llama3` | `llama3`                |
+| `Qwen/Qwen2.5-3B-Instruct`           | `qwen2`  | `qwen2`                 |
 
-+ tune_type_llm: `frozen`, `full`, `lora`
++ tune_type_llm: `frozen`, `lora`, `full`
 
 ## 3. Encoder and Connector (image)
 | encoder_image_name_or_path          | encoder_image_type |
@@ -31,6 +31,7 @@
 | encoder_image3d_name_or_path | encoder_image3d_type |
 | ---------------------------- | -------------------- |
 | `GoodBaiBai88/M3D-CLIP`      | `m3dclip`            |
+| `shiym2000/MedM-CLIP-CT`     | `medmclip`           |
 
 + tune_type_encoder_image3d: `frozen`, `full`
 
@@ -38,5 +39,6 @@
 | ---------------------- | ---------------------- |
 | `mlp2x_gelu`           | `mlp`                  |
 | `mlp2x_gelu`           | `spatial_pooling`      |
+| `mlp2x_gelu`           | `attn_pooling`         |
 
 + tune_type_connector_image3d: `frozen`, `full`

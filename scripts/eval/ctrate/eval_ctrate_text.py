@@ -20,13 +20,11 @@ def main(args):
     for answer_dict, predict in tqdm(zip(answer_list, predict_list), total=len(answer_list)):
         answer = answer_dict["answer"].strip()
         predict = predict.strip()
-        question_type = answer_dict["type"]
         if len(predict) == 0:
             results.append({
                 "id": answer_dict["id"],
                 "answer": answer,
                 "predict": predict,
-                "type": question_type,
                 "bleu1": 0,
                 "rouge1": 0,
                 "rougeL": 0,
@@ -44,7 +42,6 @@ def main(args):
             "id": answer_dict["id"],
             "answer": answer,
             "predict": predict,
-            "type": question_type,
             "bleu1": bleu1_score["bleu"],
             "rouge1": rouge_score["rouge1"],
             "rougeL": rouge_score["rougeL"],
@@ -56,20 +53,15 @@ def main(args):
         json.dump(results, f)
 
     # calculate average scores
+    results_avg = {}
     metric_list = ["bleu1", "rouge1", "rougeL", "meteor", "bert_f1"]
     for metric_name in metric_list:
         metric_scores = [r[metric_name] for r in results]
         print(f"{metric_name}: {sum(metric_scores) / len(metric_scores)}")
+        results_avg[metric_name] = sum(metric_scores) / len(metric_scores)
 
-    # calculate average scores by question type
-    type_list = sorted(set([r["type"] for r in results]))
-    if len(type_list) > 1:
-        for question_type in type_list:
-            print()
-            print(f"Question type: {question_type}")
-            for metric_name in metric_list:
-                metric_scores = [r[metric_name] for r in results if r["type"] == question_type]
-                print(f"{metric_name}: {sum(metric_scores) / len(metric_scores)}")
+    with open(args.result_path.replace(".json", "_avg.json"), "w") as f:
+        json.dump(results_avg, f)
 
 
 if __name__ == "__main__":
