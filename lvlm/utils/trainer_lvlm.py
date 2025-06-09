@@ -38,17 +38,19 @@ class LVLMTrainer(Trainer):
     
 
 class LVLMMULTITrainer(Trainer):
-    def __init__(self, #
-                 datasets=None,   
-                 collate_fn=None,     
-                 special_args=None,
-                 *args, 
-                 **kwargs):
-        super().__init__(*args, **kwargs)  
+    def __init__(
+        self,
+        datasets=None,
+        collate_fn=None,
+        special_args=None,
+        *args,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
         self.datasets = datasets
         self.collate_fn = collate_fn
+        self.special_args = special_args
         self._dataloaders = None
-        self.special_args=special_args
 
     def create_optimizer(self):
         opt_model = self.model
@@ -80,8 +82,8 @@ class LVLMMULTITrainer(Trainer):
 
     def get_train_dataloader(self):
         batch_size = self.special_args.per_device_train_batch_size
-        datasets=self.datasets
-        batch_sizes = {name:[batch_size for i in data] for name,data in datasets.items()}
+        datasets = self.datasets
+        batch_sizes = {name: [batch_size for i in data] for name, data in datasets.items()}
         split_names = sorted(self.datasets.keys())
 
         datasets = [self.datasets[split] for split in split_names]
@@ -145,9 +147,7 @@ class LVLMMULTITrainer(Trainer):
 
         loaders = []
 
-        for dataset, bsz, is_train, collate_fn in zip(
-            datasets, batch_sizes, is_trains, collate_fns
-        ):
+        for dataset, bsz, is_train, collate_fn in zip(datasets, batch_sizes, is_trains, collate_fns):
             if isinstance(dataset, list) or isinstance(dataset, tuple):
                 if hasattr(dataset[0], 'sample_ratio') and dataset_ratios is None:
                     dataset_ratios = [d.sample_ratio for d in dataset]
@@ -165,6 +165,7 @@ class LVLMMULTITrainer(Trainer):
 
         return loaders
 
+
 class MultiIterLoader:
     """
     A simple wrapper for iterating over multiple iterators.
@@ -177,9 +178,7 @@ class MultiIterLoader:
     def __init__(self, loaders, ratios=None):
         # assert all loaders has __next__ method
         for loader in loaders:
-            assert hasattr(
-                loader, "__next__"
-            ), "Loader {} has no __next__ method.".format(loader)
+            assert hasattr(loader, "__next__"), "Loader {} has no __next__ method.".format(loader)
 
         if ratios is None:
             ratios = [1.0] * len(loaders)
@@ -199,6 +198,7 @@ class MultiIterLoader:
         # print(loader_idx)
         # print(self.loaders[loader_idx].task) 
         return next(self.loaders[loader_idx])
+
 
 class IterLoader:
     """

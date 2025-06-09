@@ -17,7 +17,10 @@ class MultiModalDataset(Dataset):
         self.data_arguments = data_arguments
         self.mode = mode
         self.image = image
-        self.prompt = prompt
+        if "<image>" not in prompt:
+            self.prompt = prompt
+        else:
+            self.prompt = "<image>\n" + prompt
 
         self.tokenizer = model.tokenizer
         self.template = TEMPlATE_FACTORY[data_arguments.conv_version]()
@@ -104,7 +107,7 @@ def create_data_module(model, data_arguments, mode, image, prompt):
     )
 
 
-def predict(prompt, image, temperature, max_token):
+def predict(prompt, image, temperature, max_new_tokens):
     img = image.convert("RGB")
     data_module = create_data_module(
         model=model,
@@ -129,7 +132,7 @@ def predict(prompt, image, temperature, max_token):
 
             output_ids = model.generate(
                 **batch,
-                max_new_tokens=max_token,
+                max_new_tokens=max_new_tokens,
                 do_sample=True if temperature > 0 else False,
                 num_beams=args.num_beams,
                 temperature=temperature,
@@ -145,12 +148,8 @@ def predict(prompt, image, temperature, max_token):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_dtype", type=str, default=None)
-    parser.add_argument("--data_path", type=str, default=None)
     parser.add_argument("--conv_version", type=str, default=None)
-    parser.add_argument("--image_path", type=str, default=None)
-    parser.add_argument("--image3d_path", type=str, default=None)
     parser.add_argument("--resume_from_checkpoint", type=str, default=None)
-    parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--max_new_tokens", type=int, default=None)
     parser.add_argument("--num_beams", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)
@@ -189,9 +188,9 @@ if __name__ == "__main__":
                 
                 temperature = gr.Slider(
                     minimum=0, maximum=1, step=0.1, value=0,
-                    label="Temperature", interactive=True
+                    label="Temperature", interactive=TrueR
                 )
-                max_tokens = gr.Slider(
+                max_new_tokens = gr.Slider(
                     minimum=0, maximum=1024, step=1, value=256,
                     label="Max output tokens", interactive=True
                 )
@@ -204,12 +203,12 @@ if __name__ == "__main__":
 
         submit_btn.click(
             fn=predict,
-            inputs=[text_input, image_input, temperature, max_tokens], 
+            inputs=[text_input, image_input, temperature, max_new_tokens], 
             outputs=output_text
         )
 
         clear_btn.click(
             lambda: [None, None, "", 0.0, 256], 
-            outputs=[text_input, image_input, output_text, temperature, max_tokens] 
+            outputs=[text_input, image_input, output_text, temperature ,max_new_tokens] 
         )
     demo.launch()
