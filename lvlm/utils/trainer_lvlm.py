@@ -1,9 +1,11 @@
+import random
+import time
 import torch.nn as nn
 from transformers import Trainer
 from transformers.trainer import get_parameter_names
 from torch.utils.data import DataLoader, DistributedSampler
-import time
-import random
+
+
 class LVLMTrainer(Trainer):
     def create_optimizer(self):
         opt_model = self.model
@@ -32,6 +34,8 @@ class LVLMTrainer(Trainer):
             self.optimizer = optimizer_cls(optimizer_grouped_parameters, **optimizer_kwargs)
 
         return self.optimizer
+    
+
 class LVLMMULTITrainer(Trainer):
     def __init__(self, #
                  datasets=None,   
@@ -44,6 +48,7 @@ class LVLMMULTITrainer(Trainer):
         self.collate_fn = collate_fn
         self._dataloaders = None
         self.special_args=special_args
+
     def create_optimizer(self):
         opt_model = self.model
 
@@ -71,6 +76,7 @@ class LVLMMULTITrainer(Trainer):
             self.optimizer = optimizer_cls(optimizer_grouped_parameters, **optimizer_kwargs)
 
         return self.optimizer
+
     def get_train_dataloader(self):
         batch_size = self.special_args.per_device_train_batch_size
         datasets=self.datasets
@@ -94,6 +100,7 @@ class LVLMMULTITrainer(Trainer):
         self._dataloaders = {k: v for k, v in zip(split_names, dataloaders)}
 
         return self._dataloaders["train"]
+
     def create_loaders(
         self,
         datasets,

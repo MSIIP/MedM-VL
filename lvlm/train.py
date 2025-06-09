@@ -1,3 +1,6 @@
+from types import SimpleNamespace
+import json
+import random
 import os
 import os.path as osp
 
@@ -9,18 +12,8 @@ from lvlm.model.configuration_lvlm import LVLMConfig
 from lvlm.model.modeling_lvlm import LVLMForConditionalGeneration
 from lvlm.utils.training_recipe import RECIPE_FACTORY
 from lvlm.utils.trainer_lvlm import LVLMTrainer,LVLMMULTITrainer
-import json
-import random
-from dataclasses import dataclass, field
-from types import SimpleNamespace
 
-@dataclass
-class CustomArguments:
-    ratio_json: str = field(default="", metadata={"help": "extra args"})
-    multiloader: bool = field(
-        default=False,
-        metadata={"help": "use multiloader"}
-    )
+
 
 def save_args(model_arguments, data_arguments, training_arguments, model_config):
     output_dir = osp.join(training_arguments.output_dir, "args")
@@ -66,13 +59,8 @@ def save_args(model_arguments, data_arguments, training_arguments, model_config)
 def train():
     print("*" * 30 + "Stage 1" + "*" * 30)
     print("Load args...")
-    parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments,CustomArguments))
-    model_arguments, data_arguments, training_arguments, custom_arguments = parser.parse_args_into_dataclasses()
-    if custom_arguments.multiloader:
-        ratio_json=custom_arguments.ratio_json
-        with open(ratio_json, "r", encoding="utf-8") as f:
-            ratio_dict = json.load(f)
-
+    parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
+    model_arguments, data_arguments, training_arguments = parser.parse_args_into_dataclasses()
     set_seed(42)
 
     print("*" * 30 + "Stage 2" + "*" * 30)
@@ -95,23 +83,20 @@ def train():
 
     print("*" * 30 + "Stage 5" + "*" * 30)
     print("Create data_module...")
-    if custom_arguments.multiloader:
+    if training_arguments.multiloader:
+        ratio_json=training_arguments.ratio_json
+        with open(ratio_json, "r", encoding="utf-8") as f:
+            ratio_dict = json.load(f)
         task_loaders,collator = create_multi_data_module(
             model=model,
             data_arguments=data_arguments,
             ratio_dict=ratio_dict,
             mode="train",
         )
-    else:
-        data_module = create_data_module(
-        model=model,
-        data_arguments=data_arguments,
-        mode="train",
-    )
 
-    print("*" * 30 + "Stage 6" + "*" * 30)
-    print("Create trainer and train...")
-    if custom_arguments.multiloader:
+        print("*" * 30 + "Stage 6" + "*" * 30)
+        print("Create trainer and train...")
+
         special_args = SimpleNamespace(
             use_distributed=training_arguments.local_rank != -1,
             dataloader_num_workers=training_arguments.dataloader_num_workers,
@@ -129,12 +114,22 @@ def train():
             args=training_arguments
         )
     else:
+        data_module = create_data_module(
+        model=model,
+        data_arguments=data_arguments,
+        mode="train",
+        )
+
+        print("*" * 30 + "Stage 6" + "*" * 30)
+        print("Create trainer and train...")
+
         trainer = LVLMTrainer(
         model=model,
         tokenizer=model.tokenizer,
         args=training_arguments,
         **data_module,
     )
+
     trainer.train()
 
     print("*" * 30 + "Stage 7" + "*" * 30)

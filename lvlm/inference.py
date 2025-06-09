@@ -68,7 +68,7 @@ def inference(args):
     print("Save outputs...")
     os.makedirs(args.output_dir, exist_ok=True)
     with open(osp.join(args.output_dir, osp.basename(args.data_path)), "w") as f:
-        json.dump(outputs_list, f)
+        json.dump(outputs_list, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
