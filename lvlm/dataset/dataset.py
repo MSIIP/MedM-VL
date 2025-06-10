@@ -173,6 +173,6 @@ def create_multi_data_module(model, data_arguments, ratio_dict, mode):
         dataset.sample_ratio = ratio_dict[task_name]
         dataset.task = task_name
         task_loaders["train"].append(dataset)
-    collator = DataCollatorForMultiModalDataset(model.tokenizer, mode=mode)
-    return task_loaders,collator
+    collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
+    return task_loaders, collator
 
