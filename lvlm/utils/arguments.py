@@ -89,6 +89,9 @@ class TrainingArguments(transformers.TrainingArguments):
     encoder_image3d_lora_bias: Optional[str] = field(default=None)
     tune_type_connector_image3d: str = field(default="frozen")
 
+    ratio_json: str = field(default=None, metadata={"help": "extra args"})
+    multiloader: bool = field(default=False, metadata={"help": "use multiloader"})
+
 
 def set_seed(seed=42):
     """

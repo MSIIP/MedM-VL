@@ -1,14 +1,17 @@
+import json
+import random
 import os
 import os.path as osp
+from types import SimpleNamespace
 
 import transformers
 
 from lvlm.utils.arguments import ModelArguments, DataArguments, TrainingArguments, set_seed
-from lvlm.dataset.dataset import create_data_module
+from lvlm.dataset.dataset import create_data_module, create_multi_data_module
 from lvlm.model.configuration_lvlm import LVLMConfig
 from lvlm.model.modeling_lvlm import LVLMForConditionalGeneration
 from lvlm.utils.training_recipe import RECIPE_FACTORY
-from lvlm.utils.trainer_lvlm import LVLMTrainer
+from lvlm.utils.trainer_lvlm import LVLMTrainer, LVLMMULTITrainer
 
 
 def save_args(model_arguments, data_arguments, training_arguments, model_config):
@@ -77,23 +80,55 @@ def train():
     training_recipe = RECIPE_FACTORY[training_arguments.training_recipe](training_arguments)
     model = training_recipe(model)  # tune_type
 
-    print("*" * 30 + "Stage 5" + "*" * 30)
-    print("Create data_module...")
-    data_module = create_data_module(
-        model=model,
-        data_arguments=data_arguments,
-        mode="train",
-    )
+    if training_arguments.multiloader:
+        print("*" * 30 + "Stage 5" + "*" * 30)
+        print("Create data_module...")
+        with open(training_arguments.ratio_json, "r", encoding="utf-8") as f:
+            ratio_dict = json.load(f)
+        task_loaders, collator = create_multi_data_module(
+            model=model,
+            data_arguments=data_arguments,
+            ratio_dict=ratio_dict,
+            mode="train",
+        )
 
-    print("*" * 30 + "Stage 6" + "*" * 30)
-    print("Create trainer and train...")
-    trainer = LVLMTrainer(
-        model=model,
-        tokenizer=model.tokenizer,
-        args=training_arguments,
-        **data_module,
-    )
-    trainer.train()
+        print("*" * 30 + "Stage 6" + "*" * 30)
+        print("Create trainer and train...")
+        special_args = SimpleNamespace(
+            use_distributed=training_arguments.local_rank != -1,
+            dataloader_num_workers=training_arguments.dataloader_num_workers,
+            per_device_train_batch_size=training_arguments.per_device_train_batch_size,
+            world_size=training_arguments.world_size,
+            process_index=training_arguments.process_index,
+        )
+
+        trainer = LVLMMULTITrainer(
+            model=model,
+            tokenizer=model.tokenizer,
+            datasets=task_loaders,
+            collate_fn=collator,
+            special_args=special_args,
+            args=training_arguments,
+        )
+        trainer.train()
+    else:
+        print("*" * 30 + "Stage 5" + "*" * 30)
+        print("Create data_module...")
+        data_module = create_data_module(
+            model=model,
+            data_arguments=data_arguments,
+            mode="train",
+        )
+
+        print("*" * 30 + "Stage 6" + "*" * 30)
+        print("Create trainer and train...")
+        trainer = LVLMTrainer(
+            model=model,
+            tokenizer=model.tokenizer,
+            args=training_arguments,
+            **data_module,
+        )
+        trainer.train()
 
     print("*" * 30 + "Stage 7" + "*" * 30)
     print("Save model...")
