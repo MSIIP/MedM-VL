@@ -142,7 +142,7 @@ def create_data_module(model, data_arguments, mode):
         model=model,
         data=data,
         data_arguments=data_arguments,
-        mode=mode
+        mode=mode,
     )
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return dict(

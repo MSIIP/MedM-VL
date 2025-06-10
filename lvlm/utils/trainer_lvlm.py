@@ -2,9 +2,9 @@ import random
 import time
 
 import torch.nn as nn
+from torch.utils.data import DataLoader, DistributedSampler
 from transformers import Trainer
 from transformers.trainer import get_parameter_names
-from torch.utils.data import DataLoader, DistributedSampler
 
 
 class LVLMTrainer(Trainer):

@@ -110,6 +110,7 @@ def train():
             special_args=special_args,
             args=training_arguments,
         )
+        trainer.train()
     else:
         print("*" * 30 + "Stage 5" + "*" * 30)
         print("Create data_module...")
@@ -127,7 +128,7 @@ def train():
             args=training_arguments,
             **data_module,
         )
-    trainer.train()
+        trainer.train()
 
     print("*" * 30 + "Stage 7" + "*" * 30)
     print("Save model...")
