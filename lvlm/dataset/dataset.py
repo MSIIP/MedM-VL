@@ -134,14 +134,15 @@ class DataCollatorForMultiModalDataset:
 
         return batch
 
+
 def create_data_module(model, data_arguments, mode):
     with open(data_arguments.data_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     train_dataset = MultiModalDataset(
-    model=model,
-    data=data,
-    data_arguments=data_arguments,
-    mode=mode
+        model=model,
+        data=data,
+        data_arguments=data_arguments,
+        mode=mode
     )
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return dict(
@@ -149,6 +150,7 @@ def create_data_module(model, data_arguments, mode):
         eval_dataset=None,
         data_collator=data_collator,
     )
+
 
 def create_multi_data_module(model, data_arguments, ratio_dict, mode):
     with open(data_arguments.data_path, "r", encoding="utf-8") as f:
@@ -162,7 +164,12 @@ def create_multi_data_module(model, data_arguments, ratio_dict, mode):
     task_loaders = {"train":[]}
 
     for task_name, data_list in task_data_map.items():
-        dataset = MultiModalDataset(model=model, data=data_list, data_arguments=data_arguments, mode=mode)
+        dataset = MultiModalDataset(
+            model=model, 
+            data=data_list, 
+            data_arguments=data_arguments, 
+            mode=mode,
+        )
         dataset.sample_ratio = ratio_dict[task_name]
         dataset.task = task_name
         task_loaders["train"].append(dataset)

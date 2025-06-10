@@ -14,7 +14,6 @@ from lvlm.utils.training_recipe import RECIPE_FACTORY
 from lvlm.utils.trainer_lvlm import LVLMTrainer, LVLMMULTITrainer
 
 
-
 def save_args(model_arguments, data_arguments, training_arguments, model_config):
     output_dir = osp.join(training_arguments.output_dir, "args")
     os.makedirs(output_dir, exist_ok=True)
@@ -100,7 +99,7 @@ def train():
             dataloader_num_workers=training_arguments.dataloader_num_workers,
             per_device_train_batch_size=training_arguments.per_device_train_batch_size,
             world_size=training_arguments.world_size,
-            process_index=training_arguments.process_index
+            process_index=training_arguments.process_index,
         )
 
         trainer = LVLMMULTITrainer(
@@ -109,7 +108,7 @@ def train():
             datasets=task_loaders,
             collate_fn=collator,
             special_args=special_args,
-            args=training_arguments
+            args=training_arguments,
         )
     else:
         print("*" * 30 + "Stage 5" + "*" * 30)

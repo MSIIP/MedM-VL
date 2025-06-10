@@ -44,7 +44,7 @@ class LVLMMULTITrainer(Trainer):
         collate_fn=None,
         special_args=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.datasets = datasets

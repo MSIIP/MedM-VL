@@ -17,7 +17,7 @@ class MultiModalDataset(Dataset):
         self.data_arguments = data_arguments
         self.mode = mode
         self.image = image
-        if "<image>" not in prompt:
+        if "<image>" in prompt:
             self.prompt = prompt
         else:
             self.prompt = "<image>\n" + prompt
@@ -153,7 +153,6 @@ if __name__ == "__main__":
     parser.add_argument("--max_new_tokens", type=int, default=None)
     parser.add_argument("--num_beams", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)
-    parser.add_argument("--batch_size", type=int, default=1)
     args = parser.parse_args()
     set_seed(42)
 
@@ -188,11 +187,11 @@ if __name__ == "__main__":
                 
                 temperature = gr.Slider(
                     minimum=0, maximum=1, step=0.1, value=0,
-                    label="Temperature", interactive=TrueR
+                    label="Temperature", interactive=True,
                 )
                 max_new_tokens = gr.Slider(
                     minimum=0, maximum=1024, step=1, value=256,
-                    label="Max output tokens", interactive=True
+                    label="Max output tokens", interactive=True,
                 )
                 with gr.Row():
                     submit_btn = gr.Button("提交", variant="primary")
@@ -209,6 +208,6 @@ if __name__ == "__main__":
 
         clear_btn.click(
             lambda: [None, None, "", 0.0, 256], 
-            outputs=[text_input, image_input, output_text, temperature ,max_new_tokens] 
+            outputs=[text_input, image_input, output_text, temperature, max_new_tokens] 
         )
     demo.launch()
