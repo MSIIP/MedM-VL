@@ -38,13 +38,9 @@ def inference(args):
             data_item["conversations"] = []
 
             for idx in range(num_turn):
-                data_item["conversations"].append(
-                    {
-                        "from": "human",
-                        "value": data["conversations"][2 * idx]["value"]  # Get the next human response
-                    }
-                )
+                data_item["conversations"].append(data["conversations"][2 * idx])  # Get the human input
                 print(f"[{data_item['conversations'][-1]['from']}]:\n{data_item['conversations'][-1]['value']}\n")
+
                 train_dataset = MultiModalDataset(
                     model=model,
                     data=[data_item],

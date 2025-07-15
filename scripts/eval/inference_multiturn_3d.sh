@@ -2,11 +2,11 @@ export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
 MODEL_PATH="work_dirs/MedM-VL-CT-Chest-3B-en"
 
-CUDA_VISIBLE_DEVICES=0 python lvlm/inference.py \
+CUDA_VISIBLE_DEVICES=0 python lvlm/inference_multiturn.py \
     --model_dtype bfloat16 \
-    --data_path docs/example_3d_inference.json \
+    --data_path docs/example_3d_finetune.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_npy/valid \
+    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_npy/train \
     --resume_from_checkpoint $MODEL_PATH \
     --output_dir $MODEL_PATH/eval \
     --max_new_tokens 256 \
