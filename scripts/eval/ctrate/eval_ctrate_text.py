@@ -26,6 +26,9 @@ def main(args):
                 "answer": answer,
                 "predict": predict,
                 "bleu1": 0,
+                "bleu2": 0,
+                "bleu3": 0,
+                "bleu4": 0,
                 "rouge1": 0,
                 "rougeL": 0,
                 "meteor": 0,
@@ -34,6 +37,9 @@ def main(args):
             continue
 
         bleu1_score = bleu.compute(predictions=[predict], references=[answer], max_order=1)
+        bleu2_score = bleu.compute(predictions=[predict], references=[answer], max_order=2)
+        bleu3_score = bleu.compute(predictions=[predict], references=[answer], max_order=3)
+        bleu4_score = bleu.compute(predictions=[predict], references=[answer], max_order=4)
         rouge_score = rouge.compute(predictions=[predict], references=[answer])
         meteor_score = meteor.compute(predictions=[predict], references=[answer])
         bert_score = bertscore.compute(predictions=[predict], references=[answer], lang="en")
@@ -43,6 +49,9 @@ def main(args):
             "answer": answer,
             "predict": predict,
             "bleu1": bleu1_score["bleu"],
+            "bleu2": bleu2_score["bleu"],
+            "bleu3": bleu3_score["bleu"],
+            "bleu4": bleu4_score["bleu"],
             "rouge1": rouge_score["rouge1"],
             "rougeL": rouge_score["rougeL"],
             "meteor": meteor_score["meteor"],
@@ -54,7 +63,7 @@ def main(args):
 
     # calculate average scores
     results_avg = {}
-    metric_list = ["bleu1", "rouge1", "rougeL", "meteor", "bert_f1"]
+    metric_list = ["bleu1", "bleu2", "bleu3", "bleu4", "rouge1", "rougeL", "meteor", "bert_f1"]
     for metric_name in metric_list:
         metric_scores = [r[metric_name] for r in results]
         print(f"{metric_name}: {sum(metric_scores) / len(metric_scores)}")
