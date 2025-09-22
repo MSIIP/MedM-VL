@@ -26,7 +26,18 @@ def inference(args):
 
     print("*" * 30 + "Stage 2" + "*" * 30)
     print("Create data_module...")
+    with open(args.data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    for d in data:
+        answer = ""
+        if d["conversations"][-1]["from"] == "gpt":
+            answer = d["conversations"][-1]["value"]
+            d["conversations"] = d["conversations"][:-1]
+        if "answer" not in d:
+            d["answer"] = answer
+
     data_module = create_data_module(
+        data=data,
         model=model,
         data_arguments=args,
         mode="eval",
@@ -64,11 +75,14 @@ def inference(args):
             for output in outputs:
                 print(output)
 
+    for d, output in zip(data, outputs_list):
+        d["conversations"].append({"from": "gpt", "value": output})
+
     print("*" * 30 + "Stage 5" + "*" * 30)
     print("Save outputs...")
     os.makedirs(args.output_dir, exist_ok=True)
     with open(osp.join(args.output_dir, osp.basename(args.data_path)), "w") as f:
-        json.dump(outputs_list, f, ensure_ascii=False)
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

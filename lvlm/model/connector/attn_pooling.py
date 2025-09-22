@@ -20,8 +20,8 @@ class ConnectorConfig(PretrainedConfig):
             self.connector_type = model_arguments.connector_image3d_type
             self.connector_name = model_arguments.connector_image3d_name
             self.connector_path = model_arguments.connector_image3d_path
-        # self.img_size = encoder_config.img_size
-        # self.patch_size = encoder_config.patch_size
+        self.image_size = encoder_config.image_size
+        self.patch_size = encoder_config.patch_size
 
         self.input_dim = encoder_config.hidden_size
         self.output_dim = llm_config.hidden_size
@@ -40,7 +40,7 @@ class AttnPooling(Connector):
             config = config.connector_image3d_config
 
         d_model = config.input_dim
-        n_queries = 256
+        n_queries = (config.image_size // config.patch_size) ** 2 
         n_head = 8
 
         self.n_queries = n_queries

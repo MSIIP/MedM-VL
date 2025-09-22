@@ -83,9 +83,12 @@ def train():
     if training_arguments.multiloader:
         print("*" * 30 + "Stage 5" + "*" * 30)
         print("Create data_module...")
+        with open(data_arguments.data_path, "r", encoding="utf-8") as f:
+            all_data = json.load(f)
         with open(training_arguments.ratio_json, "r", encoding="utf-8") as f:
             ratio_dict = json.load(f)
         task_loaders, collator = create_multi_data_module(
+            all_data=all_data,
             model=model,
             data_arguments=data_arguments,
             ratio_dict=ratio_dict,
@@ -111,10 +114,14 @@ def train():
             args=training_arguments,
         )
         trainer.train()
+
     else:
         print("*" * 30 + "Stage 5" + "*" * 30)
         print("Create data_module...")
+        with open(data_arguments.data_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
         data_module = create_data_module(
+            data=data,
             model=model,
             data_arguments=data_arguments,
             mode="train",

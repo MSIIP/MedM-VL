@@ -69,7 +69,14 @@ class MultiModalDataset(Dataset):
             data_dict["image3d"] = []
             for filename in data_item["image3d"]:
                 image3d_path = osp.join(self.data_arguments.image3d_path, filename)
-                image3d = np.load(image3d_path)
+                if image3d_path.endswith(".npy"):
+                    image3d = np.load(image3d_path)
+
+                    # HU2RGB
+                    # HU_MIN, HU_MAX = -1000, 1000
+                    # image3d = np.clip(image3d, HU_MIN, HU_MAX)
+                    # image3d = (image3d - HU_MIN) / (HU_MAX - HU_MIN) * 255
+
                 if self.preprocessor_image is not None:
                     image3d = self.preprocessor_image(image3d, mode=self.mode)
                 elif self.preprocessor_image3d is not None:
@@ -135,9 +142,7 @@ class DataCollatorForMultiModalDataset:
         return batch
 
 
-def create_data_module(model, data_arguments, mode):
-    with open(data_arguments.data_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+def create_data_module(data, model, data_arguments, mode):
     train_dataset = MultiModalDataset(
         model=model,
         data=data,
@@ -152,10 +157,7 @@ def create_data_module(model, data_arguments, mode):
     )
 
 
-def create_multi_data_module(model, data_arguments, ratio_dict, mode):
-    with open(data_arguments.data_path, "r", encoding="utf-8") as f:
-        all_data = json.load(f)
-
+def create_multi_data_module(all_data, model, data_arguments, ratio_dict, mode):
     task_data_map = defaultdict(list)
     for item in all_data:
         task = item["task"]
@@ -175,4 +177,3 @@ def create_multi_data_module(model, data_arguments, ratio_dict, mode):
         task_loaders["train"].append(dataset)
     collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)
     return task_loaders, collator
-
