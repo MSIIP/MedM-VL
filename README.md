@@ -10,7 +10,7 @@ MedM-VL focuses on **small-scale** medical LVLMs, designed for **direct deployme
 
 
 ## :newspaper: News
-
++ **[2025.07.29]**: The technical report has been accepted by MICCAI2025 workshop (MLLMCP).
 + **[2025.04.10]**: The model weights (v1.0) have been uploaded to Hugging Face.
   + [shiym2000/MedM-VL-2D-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-2D-3B-en)
   + [shiym2000/MedM-VL-CT-Chest-3B-en · Hugging Face](https://huggingface.co/shiym2000/MedM-VL-CT-Chest-3B-en)
