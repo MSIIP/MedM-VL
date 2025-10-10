@@ -8,21 +8,22 @@ import torch
 from torch.utils.data import DataLoader
 
 from lvlm.utils.arguments import set_seed
-from lvlm.dataset.dataset import MultiModalDataset, DataCollatorForMultiModalDataset
+from lvlm.dataset.dataset import create_data_module
 from lvlm.model.modeling_lvlm import LVLMForConditionalGeneration
 
 
 def inference(args):
+    model_dtype = torch.float16 if args.model_dtype == "float16" else (torch.bfloat16 if args.model_dtype == "bfloat16" else torch.float32)
+    model_device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
     print("*" * 30 + "Stage 1" + "*" * 30)
     print("Load model...")
-    model_dtype = torch.float16 if args.model_dtype == "float16" else (torch.bfloat16 if args.model_dtype == "bfloat16" else torch.float32)
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = LVLMForConditionalGeneration.from_pretrained(args.resume_from_checkpoint)
-    model.to(dtype=model_dtype, device=device)
+    model.to(dtype=model_dtype, device=model_device)
     model.eval()
 
     if args.batch_size > 1:
-        model.config.llm_padding_side = "left"
+        model.config.lvlm_llm_padding_side = "left"
 
     with open(args.data_path, "r") as f:
         data_list = json.load(f)
@@ -41,26 +42,27 @@ def inference(args):
                 data_item["conversations"].append(data["conversations"][2 * idx])  # Get the human input
                 print(f"[{data_item['conversations'][-1]['from']}]:\n{data_item['conversations'][-1]['value']}\n")
 
-                train_dataset = MultiModalDataset(
+                data_module = create_data_module(
+                    data=data,
+                    conv_version=args.conv_version,
+                    image_dir=args.image_dir,
+                    image3d_dir=args.image3d_dir,
                     model=model,
-                    data=[data_item],
-                    data_arguments=args,
                     mode="eval",
                 )
-                data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode="eval")
                 data_loader = DataLoader(
-                    train_dataset,
+                    data_module["train_dataset"],
                     batch_size=1,
                     shuffle=False,
-                    collate_fn=data_collator,
+                    collate_fn=data_module["data_collator"],
                 )
 
                 for batch in data_loader:
                     for k, v in batch.items():
                         if v is not None:
-                            batch[k] = v.to(device)
+                            batch[k] = v.to(model_device)
                             if k == "image" or k == "image3d":
-                                batch[k] = v.to(dtype=model_dtype, device=device)
+                                batch[k] = v.to(dtype=model_dtype, device=model_device)
 
                     output_ids = model.generate(
                         **batch,
@@ -71,6 +73,7 @@ def inference(args):
                         pad_token_id=model.tokenizer.pad_token_id,
                         eos_token_id=model.tokenizer.eos_token_id,
                     )
+                    # output_ids = [output_ids_cur[len(input_ids):] for input_ids, output_ids_cur in zip(batch["input_ids"], output_ids)]  # for only text
 
                     outputs = model.tokenizer.batch_decode(output_ids, skip_special_tokens=True)
                     data_item["conversations"].append(
@@ -85,20 +88,20 @@ def inference(args):
 
     print("*" * 30 + "Stage 3" + "*" * 30)
     print("Save outputs...")
-    os.makedirs(args.output_dir, exist_ok=True)
-    with open(osp.join(args.output_dir, osp.basename(args.data_path)), "w") as f:
+    os.makedirs(osp.dirname(args.output_path), exist_ok=True)
+    with open(args.output_path, "w") as f:
         json.dump(outputs_list, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--resume_from_checkpoint", type=str, default=None)
     parser.add_argument("--model_dtype", type=str, default=None)
     parser.add_argument("--data_path", type=str, default=None)
     parser.add_argument("--conv_version", type=str, default=None)
-    parser.add_argument("--image_path", type=str, default=None)
-    parser.add_argument("--image3d_path", type=str, default=None)
-    parser.add_argument("--resume_from_checkpoint", type=str, default=None)
-    parser.add_argument("--output_dir", type=str, default=None)
+    parser.add_argument("--image_dir", type=str, default=None)
+    parser.add_argument("--image3d_dir", type=str, default=None)
+    parser.add_argument("--output_path", type=str, default=None)
     parser.add_argument("--max_new_tokens", type=int, default=None)
     parser.add_argument("--num_beams", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)

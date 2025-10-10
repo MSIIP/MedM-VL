@@ -4,7 +4,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed examples/zero2.json \
     --data_path examples/data/finetune_3d.json \
     --conv_version qwen2 \
-    --image3d_path /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
+    --image3d_dir /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
     --training_recipe common \
     --tune_type_llm lora \
     --llm_lora_r 128 \
@@ -13,21 +13,22 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --llm_lora_bias none \
     --tune_type_encoder_image frozen \
     --tune_type_connector_image full \
-    --bf16 True \
-    --gradient_checkpointing True \
-    --output_dir work_dirs/MedM-VL-CT-Chest-3B-en-finetune \
     --resume_from_checkpoint work_dirs/MedM-VL-CT-Chest-3B-en \
-    --dataloader_num_workers 8 \
-    --dataloader_pin_memory True \
-    --dataloader_persistent_workers True \
+    --output_dir work_dirs/MedM-VL-CT-Chest-3B-en-finetune \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --gradient_accumulation_steps 1 \
     --learning_rate 2e-4 \
-    --weight_decay 0.0 \
-    --warmup_ratio 0.03 \
     --lr_scheduler_type cosine \
-    --eval_strategy no \
-    --save_strategy no \
+    --warmup_ratio 0.03 \
+    --weight_decay 0.0 \
+    --bf16 True \
+    --dataloader_num_workers 8 \
+    --dataloader_pin_memory True \
+    --dataloader_persistent_workers True \
+    --gradient_checkpointing True \
+    --logging_strategy steps \
+    --logging_steps 1 \
     --report_to tensorboard \
-    --logging_steps 1
+    --eval_strategy no \
+    --save_strategy no

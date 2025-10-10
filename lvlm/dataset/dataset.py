@@ -13,24 +13,31 @@ from lvlm.dataset.template import TEMPlATE_FACTORY
 
 
 class MultiModalDataset(Dataset):
-    def __init__(self, model, data, data_arguments, mode):
+    def __init__(
+        self,
+        data,
+        conv_version,
+        image_dir,
+        image3d_dir,
+        model,
+        mode,
+    ):
         super(MultiModalDataset, self).__init__()
-        self.data_arguments = data_arguments
-        self.mode = mode
         self.data = data
+        self.conv_version = conv_version
+        self.image_dir = image_dir
+        self.image3d_dir = image3d_dir
+        self.mode = mode
 
+        self.template = TEMPlATE_FACTORY[conv_version]()
         self.tokenizer = model.tokenizer
-        self.template = TEMPlATE_FACTORY[data_arguments.conv_version]()
+        self.processor_image = None
+        self.processor_image3d = None
 
         if model.encoder_image is not None:
-            self.preprocessor_image = model.encoder_image.processor
-        else:
-            self.preprocessor_image = None
-
+            self.processor_image = model.encoder_image.processor
         if model.encoder_image3d is not None:
-            self.preprocessor_image3d = model.encoder_image3d.processor
-        else:
-            self.preprocessor_image3d = None
+            self.processor_image3d = model.encoder_image3d.processor
 
     def __len__(self):
         return len(self.data)
@@ -55,35 +62,34 @@ class MultiModalDataset(Dataset):
         #         v = v[:10]
         #     print(f"{k:16}", v)
 
+        data_dict["image"] = None
+        data_dict["image3d"] = None
+
         if "image" in data_item:  # for multi image
             data_dict["image"] = []
             for filename in data_item["image"]:
-                image_path = osp.join(self.data_arguments.image_path, filename)
+                image_path = osp.join(self.image_dir, filename)
                 image = Image.open(image_path).convert("RGB")
-                image = self.preprocessor_image(image, mode=self.mode)
+                image = self.processor_image(image, mode=self.mode)
                 data_dict["image"].append(image)
-        else:
-            data_dict["image"] = None
 
         if "image3d" in data_item:
             data_dict["image3d"] = []
             for filename in data_item["image3d"]:
-                image3d_path = osp.join(self.data_arguments.image3d_path, filename)
+                image3d_path = osp.join(self.image3d_dir, filename)
                 if image3d_path.endswith(".npy"):
                     image3d = np.load(image3d_path)
 
                     # HU2RGB
-                    # HU_MIN, HU_MAX = -1000, 1000
-                    # image3d = np.clip(image3d, HU_MIN, HU_MAX)
-                    # image3d = (image3d - HU_MIN) / (HU_MAX - HU_MIN) * 255
+                    HU_MIN, HU_MAX = -1000, 1000
+                    image3d = np.clip(image3d, HU_MIN, HU_MAX)
+                    image3d = (image3d - HU_MIN) / (HU_MAX - HU_MIN) * 255
 
-                if self.preprocessor_image is not None:
-                    image3d = self.preprocessor_image(image3d, mode=self.mode)
-                elif self.preprocessor_image3d is not None:
-                    image3d = self.preprocessor_image3d(image3d, mode=self.mode)
+                if self.processor_image is not None:
+                    image3d = self.processor_image(image3d, mode=self.mode)
+                elif self.processor_image3d is not None:
+                    image3d = self.processor_image3d(image3d, mode=self.mode)
                 data_dict["image3d"].append(image3d)
-        else:
-            data_dict["image3d"] = None
 
         return data_dict
 
@@ -142,11 +148,20 @@ class DataCollatorForMultiModalDataset:
         return batch
 
 
-def create_data_module(data, model, data_arguments, mode):
+def create_data_module(
+    data,
+    conv_version,
+    image_dir,
+    image3d_dir,
+    model,
+    mode,
+):
     train_dataset = MultiModalDataset(
-        model=model,
         data=data,
-        data_arguments=data_arguments,
+        conv_version=conv_version,
+        image_dir=image_dir,
+        image3d_dir=image3d_dir,
+        model=model,
         mode=mode,
     )
     data_collator = DataCollatorForMultiModalDataset(tokenizer=model.tokenizer, mode=mode)

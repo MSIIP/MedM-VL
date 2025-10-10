@@ -7,13 +7,12 @@ from transformer_maskgit import CTViT
 from lvlm.model.encoder.base import EncoderModel
 
 
-def ctclip_load_config(model_arguments):
-    encoder_image3d_config = AutoConfig.from_pretrained(
-        model_arguments.encoder_image3d_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def ctclip_load_config(lvlm_encoder_image3d_name_or_path, **kwargs):
+    lvlm_encoder_image3d_config = AutoConfig.from_pretrained(
+        lvlm_encoder_image3d_name_or_path,
         trust_remote_code=True,
     )
-    return encoder_image3d_config
+    return lvlm_encoder_image3d_config
 
 
 class Image3DProcessor:
@@ -55,8 +54,8 @@ class Image3DProcessor:
 class CTCLIPModel(EncoderModel):
     def __init__(self, config):
         super().__init__(config)
+        self.config = config
 
-        self.config = config.encoder_image3d_config
         self.processor = Image3DProcessor()
         self.encoder = CTViT(
             dim=512,
@@ -69,13 +68,15 @@ class CTCLIPModel(EncoderModel):
             dim_head=32,
             heads=8
         )
+        self.encoder.cpu().eval()
+
+    def load_pretrained_weights(self):
         self.encoder.load(config.encoder_image3d_name_or_path)
         self.encoder.cpu().eval()
 
     def forward(self, x, select_layer, select_feature):
         features = self.encoder(x, return_encoded_tokens=True) 
         features = features.view(features.shape[0], -1, features.shape[-1])
-
         return features
 
 

@@ -1,88 +1,67 @@
-from types import SimpleNamespace
-
 from transformers import PretrainedConfig
 
 from lvlm.model.llm import LLM_FACTORY
-from lvlm.model.encoder import ENCODER_FACTORY
-from lvlm.model.connector import CONNECTOR_FACTORY
 
 
 class LVLMConfig(PretrainedConfig):
-    def __init__(self, model_arguments=None, **kwargs):
-        if model_arguments is not None:
-            self.cache_dir_hf = model_arguments.cache_dir_hf
+    model_type = "lvlm"
 
-            self.llm_type = model_arguments.llm_type
-            self.llm_name_or_path = model_arguments.llm_name_or_path
-            self.llm_max_length = model_arguments.llm_max_length
-            self.llm_padding_side = model_arguments.llm_padding_side
-            self.llm_attn_implementation = model_arguments.llm_attn_implementation
-            self.tokenizer_use_fast = model_arguments.tokenizer_use_fast
+    def __init__(
+        self,
+        lvlm_llm_type: str = None,
+        lvlm_llm_name_or_path: str = None,
+        lvlm_llm_max_length: int = None,
+        lvlm_llm_padding_side: str = None,
+        lvlm_llm_attn_implementation: str = None,
+        lvlm_encoder_image_type: str = None,
+        lvlm_encoder_image_name_or_path: str = None,
+        lvlm_encoder_image_select_layer: int = None,
+        lvlm_encoder_image_select_feature: str = None,
+        lvlm_connector_image_type: str = None,
+        lvlm_connector_image_name: str = None,
+        lvlm_connector_image_path: str = None,
+        lvlm_encoder_image3d_type: str = None,
+        lvlm_encoder_image3d_name_or_path: str = None,
+        lvlm_encoder_image3d_select_layer: int = None,
+        lvlm_encoder_image3d_select_feature: str = None,
+        lvlm_connector_image3d_type: str = None,
+        lvlm_connector_image3d_name: str = None,
+        lvlm_connector_image3d_path: str = None,
+        **kwargs,
+    ):
+        self.lvlm_llm_type = lvlm_llm_type
+        self.lvlm_llm_name_or_path = lvlm_llm_name_or_path
+        self.lvlm_llm_max_length = lvlm_llm_max_length
+        self.lvlm_llm_padding_side = lvlm_llm_padding_side
+        self.lvlm_llm_attn_implementation = lvlm_llm_attn_implementation
 
-            self.encoder_image_type = model_arguments.encoder_image_type
-            self.encoder_image_name_or_path = model_arguments.encoder_image_name_or_path
-            self.encoder_image_select_layer = model_arguments.encoder_image_select_layer
-            self.encoder_image_select_feature = model_arguments.encoder_image_select_feature
-            self.connector_image_type = model_arguments.connector_image_type
-            self.connector_image_name = model_arguments.connector_image_name
-            self.connector_image_path = model_arguments.connector_image_path
+        self.lvlm_encoder_image_type = lvlm_encoder_image_type
+        self.lvlm_encoder_image_name_or_path = lvlm_encoder_image_name_or_path
+        self.lvlm_encoder_image_select_layer = lvlm_encoder_image_select_layer
+        self.lvlm_encoder_image_select_feature = lvlm_encoder_image_select_feature
+        self.lvlm_connector_image_type = lvlm_connector_image_type
+        self.lvlm_connector_image_name = lvlm_connector_image_name
+        self.lvlm_connector_image_path = lvlm_connector_image_path
 
-            self.encoder_image3d_type = model_arguments.encoder_image3d_type
-            self.encoder_image3d_name_or_path = model_arguments.encoder_image3d_name_or_path
-            self.encoder_image3d_select_layer = model_arguments.encoder_image3d_select_layer
-            self.encoder_image3d_select_feature = model_arguments.encoder_image3d_select_feature
-            self.connector_image3d_type = model_arguments.connector_image3d_type
-            self.connector_image3d_name = model_arguments.connector_image3d_name
-            self.connector_image3d_path = model_arguments.connector_image3d_path
+        self.lvlm_encoder_image3d_type = lvlm_encoder_image3d_type
+        self.lvlm_encoder_image3d_name_or_path = lvlm_encoder_image3d_name_or_path
+        self.lvlm_encoder_image3d_select_layer = lvlm_encoder_image3d_select_layer
+        self.lvlm_encoder_image3d_select_feature = lvlm_encoder_image3d_select_feature
+        self.lvlm_connector_image3d_type = lvlm_connector_image3d_type
+        self.lvlm_connector_image3d_name = lvlm_connector_image3d_name
+        self.lvlm_connector_image3d_path = lvlm_connector_image3d_path
 
-            # modules
-            self.llm_config = LLM_FACTORY[self.llm_type][0](model_arguments)
+        self.lvlm_llm_config = None
+        self.lvlm_encoder_image_config = None
+        self.lvlm_connector_image_config = None
+        self.lvlm_encoder_image3d_config = None
+        self.lvlm_connector_image3d_config = None
 
-            if self.encoder_image_type is not None:
-                self.encoder_image_config = ENCODER_FACTORY[self.encoder_image_type][0](model_arguments)
-                self.connector_image_config = CONNECTOR_FACTORY[self.connector_image_type][0](
-                    model_arguments=model_arguments,
-                    llm_config=self.llm_config,
-                    encoder_config=self.encoder_image_config,
-                )
-            else:
-                self.encoder_image_config = None
-                self.connector_image_config = None
-
-            if self.encoder_image3d_type is not None:
-                self.encoder_image3d_config = ENCODER_FACTORY[self.encoder_image3d_type][0](model_arguments)
-                self.connector_image3d_config = CONNECTOR_FACTORY[self.connector_image3d_type][0](
-                    model_arguments=model_arguments,
-                    llm_config=self.llm_config,
-                    encoder_config=self.encoder_image3d_config,
-                )
-            else:
-                self.encoder_image3d_config = None
-                self.connector_image3d_config = None
-
-            self.hidden_size = self.llm_config.hidden_size  # only for deepspeed
+        if lvlm_llm_type is not None:
+            lvlm_llm_config = LLM_FACTORY[lvlm_llm_type][0](
+                lvlm_llm_name_or_path=lvlm_llm_name_or_path,
+            )
+            self.lvlm_llm_initializer_range = lvlm_llm_config.initializer_range  # model._init_weights()
+            self.hidden_size = lvlm_llm_config.hidden_size  # only for deepspeed
 
         super().__init__(**kwargs)  # AttributeError: 'LVLMConfig' object has no attribute 'pruned_heads'
-
-    @classmethod
-    def from_pretrained(cls, pretrained_model_name_or_path, **kwargs):
-        config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
-
-        model_arguments = SimpleNamespace(**config_dict)
-        config_dict["llm_config"] = LLM_FACTORY[model_arguments.llm_type][0](model_arguments)
-        if model_arguments.encoder_image_type is not None:
-            config_dict["encoder_image_config"] = ENCODER_FACTORY[model_arguments.encoder_image_type][0](model_arguments)
-            config_dict["connector_image_config"] = CONNECTOR_FACTORY[model_arguments.connector_image_type][0](
-                model_arguments=model_arguments,
-                llm_config=config_dict["llm_config"],
-                encoder_config=config_dict["encoder_image_config"],
-            )
-        if model_arguments.encoder_image3d_type is not None:
-            config_dict["encoder_image3d_config"] = ENCODER_FACTORY[model_arguments.encoder_image3d_type][0](model_arguments)
-            config_dict["connector_image3d_config"] = CONNECTOR_FACTORY[model_arguments.connector_image3d_type][0](
-                model_arguments=model_arguments,
-                llm_config=config_dict["llm_config"],
-                encoder_config=config_dict["encoder_image3d_config"],
-            )
-
-        return cls.from_dict(config_dict, **kwargs)

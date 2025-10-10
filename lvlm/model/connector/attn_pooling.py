@@ -11,33 +11,30 @@ ACT_TYPE = {"relu": nn.ReLU, "gelu": nn.GELU}
 
 
 class ConnectorConfig(PretrainedConfig):
-    def __init__(self, model_arguments, llm_config, encoder_config):
-        if model_arguments.connector_image_type is not None:
-            self.connector_type = model_arguments.connector_image_type
-            self.connector_name = model_arguments.connector_image_name
-            self.connector_path = model_arguments.connector_image_path
-        elif model_arguments.connector_image3d_type is not None:
-            self.connector_type = model_arguments.connector_image3d_type
-            self.connector_name = model_arguments.connector_image3d_name
-            self.connector_path = model_arguments.connector_image3d_path
-        self.image_size = encoder_config.image_size
-        self.patch_size = encoder_config.patch_size
+    def __init__(self, lvlm_llm_config, lvlm_encoder_config, **kwargs):
+        if kwargs["lvlm_connector_image_type"] is not None:
+            self.lvlm_connector_type = kwargs["lvlm_connector_image_type"]
+            self.lvlm_connector_name = kwargs["lvlm_connector_image_name"]
+            self.lvlm_connector_path = kwargs["lvlm_connector_image_path"]
+        elif kwargs["lvlm_connector_image3d_type"] is not None:
+            self.lvlm_connector_type = kwargs["lvlm_connector_image3d_type"]
+            self.lvlm_connector_name = kwargs["lvlm_connector_image3d_name"]
+            self.lvlm_connector_path = kwargs["lvlm_connector_image3d_path"]
 
-        self.input_dim = encoder_config.hidden_size
-        self.output_dim = llm_config.hidden_size
+        self.image_size = lvlm_encoder_config.image_size  # int
+        self.patch_size = lvlm_encoder_config.patch_size  # int
+        self.input_dim = lvlm_encoder_config.hidden_size
+        self.output_dim = lvlm_llm_config.hidden_size
 
 
-def attn_pooling_load_config(model_arguments, llm_config, encoder_config):
-    return ConnectorConfig(model_arguments, llm_config, encoder_config)
+def attn_pooling_load_config(lvlm_llm_config, lvlm_encoder_config, **kwargs):
+    return ConnectorConfig(lvlm_llm_config, lvlm_encoder_config, **kwargs)
 
 
 class AttnPooling(Connector):
     def __init__(self, config):
         super().__init__(config)
-        if config.connector_image_config is not None:
-            config = config.connector_image_config
-        elif config.connector_image3d_config is not None:
-            config = config.connector_image3d_config
+        self.config = config
 
         d_model = config.input_dim
         n_queries = (config.image_size // config.patch_size) ** 2 
@@ -50,8 +47,8 @@ class AttnPooling(Connector):
         self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=n_head, batch_first=True)
         # self.to_out = nn.Linear(d_model, d_model, bias=False)  # 输出映射
 
-        mlp_gelu_match = re.match(r"^mlp(\d+)x_gelu$", config.connector_name)
-        act_type = config.connector_name.split("_")[-1]
+        mlp_gelu_match = re.match(r"^mlp(\d+)x_gelu$", config.lvlm_connector_name)
+        act_type = config.lvlm_connector_name.split("_")[-1]
         mlp_depth = int(mlp_gelu_match.group(1))
         modules = [nn.Linear(config.input_dim, config.output_dim)]
         for _ in range(1, mlp_depth):
@@ -64,7 +61,7 @@ class AttnPooling(Connector):
 
     def forward(self, x):
         batch_size, num_tokens, d_model = x.shape  # x: (batch_size, num_tokens, d_model)
-        
+
         # 构造查询向量
         q = self.query.unsqueeze(0).repeat(batch_size, 1, 1)  # (batch_size, n_queries, d_model)
 

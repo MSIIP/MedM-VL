@@ -9,12 +9,12 @@ from lvlm.model.connector import CONNECTOR_FACTORY
 from lvlm.utils.constants import IGNORE_INDEX, IMAGE_TOKEN_ID, IMAGE3D_TOKEN_ID
 
 
-class LVLMPreTrainedModel(PreTrainedModel):
+class LVLMForConditionalGeneration(PreTrainedModel):
     config_class = LVLMConfig  # from_pretrained
     supports_gradient_checkpointing = True
 
     def _init_weights(self, module):
-        std = self.config.llm_config.initializer_range
+        std = self.config.lvlm_llm_initializer_range
 
         if hasattr(module, "class_embedding"):
             module.class_embedding.data.normal_(mean=0.0, std=std)
@@ -28,86 +28,70 @@ class LVLMPreTrainedModel(PreTrainedModel):
             if module.padding_idx is not None:
                 module.weight.data[module.padding_idx].zero_()
 
-
-class LVLMForConditionalGeneration(LVLMPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
 
-        self.llm, self.tokenizer = LLM_FACTORY[config.llm_type][1](config)
+        self.tokenizer = LLM_FACTORY[config.lvlm_llm_type][1](
+            lvlm_llm_name_or_path=config.lvlm_llm_name_or_path,
+            lvlm_llm_max_length=config.lvlm_llm_max_length,
+            lvlm_llm_padding_side=config.lvlm_llm_padding_side,
+        )
 
-        if config.encoder_image_type is not None:
-            self.encoder_image = ENCODER_FACTORY[config.encoder_image_type][1](config)
-            self.connector_image = CONNECTOR_FACTORY[config.connector_image_type][1](config)
-        else:
-            self.encoder_image = None
-            self.connector_image = None
+        lvlm_llm_config = LLM_FACTORY[config.lvlm_llm_type][0](
+            lvlm_llm_name_or_path=config.lvlm_llm_name_or_path,
+        )
+        self.llm = LLM_FACTORY[config.lvlm_llm_type][2](lvlm_llm_config)
+        self.encoder_image = None
+        self.connector_image = None
+        self.encoder_image3d = None
+        self.connector_image3d = None
 
-        if config.encoder_image3d_type is not None:
-            self.encoder_image3d = ENCODER_FACTORY[config.encoder_image3d_type][1](config)
-            self.connector_image3d = CONNECTOR_FACTORY[config.connector_image3d_type][1](config)
-        else:
-            self.encoder_image3d = None
-            self.connector_image3d = None
+        if config.lvlm_encoder_image_type is not None:
+            lvlm_encoder_image_config = ENCODER_FACTORY[config.lvlm_encoder_image_type][0](
+                lvlm_encoder_image_name_or_path=config.lvlm_encoder_image_name_or_path,
+            )
+            self.encoder_image = ENCODER_FACTORY[config.lvlm_encoder_image_type][1](lvlm_encoder_image_config)
+
+            lvlm_connector_image_config = CONNECTOR_FACTORY[config.lvlm_connector_image_type][0](
+                lvlm_llm_config=lvlm_llm_config,
+                lvlm_encoder_config=lvlm_encoder_image_config,
+                lvlm_connector_image_type=config.lvlm_connector_image_type,
+                lvlm_connector_image_name=config.lvlm_connector_image_name,
+                lvlm_connector_image_path=config.lvlm_connector_image_path,
+            )
+            self.connector_image = CONNECTOR_FACTORY[config.lvlm_connector_image_type][1](lvlm_connector_image_config)
+
+        if config.lvlm_encoder_image3d_type is not None:
+            lvlm_encoder_image3d_config = ENCODER_FACTORY[config.lvlm_encoder_image3d_type][0](
+                lvlm_encoder_image3d_name_or_path=config.lvlm_encoder_image3d_name_or_path,
+            )
+            self.encoder_image3d = ENCODER_FACTORY[config.lvlm_encoder_image3d_type][1](lvlm_encoder_image3d_config)
+
+            lvlm_connector_image3d_config = CONNECTOR_FACTORY[config.lvlm_connector_image3d_type][0](
+                lvlm_llm_config=lvlm_llm_config,
+                lvlm_encoder_config=lvlm_encoder_image3d_config,
+                lvlm_connector_image3d_name=config.lvlm_connector_image3d_name,
+                lvlm_connector_image3d_type=config.lvlm_connector_image3d_type,
+                lvlm_connector_image3d_path=config.lvlm_connector_image3d_path,
+            )
+            self.connector_image3d = CONNECTOR_FACTORY[config.lvlm_connector_image3d_type][1](lvlm_connector_image3d_config)
 
         self.post_init()
 
-    def load(self, model_arguments):
-        if model_arguments.llm_type is not None:
-            # 临时换LLM可能导致connector维度的不匹配，请谨慎
-            # update config
-            self.config.llm_type = model_arguments.llm_type
-            self.config.llm_name_or_path = model_arguments.llm_name_or_path
-            self.config.llm_max_length = model_arguments.llm_max_length
-            self.config.llm_padding_side = model_arguments.llm_padding_side
-            self.config.llm_attn_implementation = model_arguments.llm_attn_implementation
-            self.config.llm_config = LLM_FACTORY[model_arguments.llm_type][0](model_arguments)
-            self.config.tokenizer_use_fast = model_arguments.tokenizer_use_fast
-            self.config.hidden_size = self.config.llm_config.hidden_size
+    def load_pretrained_weights(self):
+        self.llm = self.llm.from_pretrained(
+            self.config.lvlm_llm_name_or_path,
+            attn_implementation=self.config.lvlm_llm_attn_implementation,
+        )
+        self.llm.requires_grad_(False)
 
-            # update model
-            self.llm, self.tokenizer = LLM_FACTORY[model_arguments.llm_type][1](self.config)
+        if self.encoder_image is not None:
+            self.encoder_image.load_pretrained_weights()
+            self.connector_image.load_pretrained_weights()
 
-        if model_arguments.encoder_image_type is not None:
-            # update config
-            self.config.encoder_image_type = model_arguments.encoder_image_type
-            self.config.encoder_image_name_or_path = model_arguments.encoder_image_name_or_path
-            self.config.encoder_image_select_layer = model_arguments.encoder_image_select_layer
-            self.config.encoder_image_select_feature = model_arguments.encoder_image_select_feature
-            self.config.connector_image_type = model_arguments.connector_image_type
-            self.config.connector_image_name = model_arguments.connector_image_name
-            self.config.connector_image_path = model_arguments.connector_image_path
-            self.config.encoder_image_config = ENCODER_FACTORY[model_arguments.encoder_image_type][0](model_arguments)
-            self.config.connector_image_config = CONNECTOR_FACTORY[model_arguments.connector_image_type][0](
-                model_arguments=model_arguments,
-                llm_config=self.config.llm_config,
-                encoder_config=self.config.encoder_image_config,
-            )
-
-            # update model
-            self.encoder_image = ENCODER_FACTORY[self.config.encoder_image_type][1](self.config)
-            self.connector_image = CONNECTOR_FACTORY[self.config.connector_image_type][1](self.config)
-            self.connector_image.load_model(self.config.connector_image_path)
-
-        if model_arguments.encoder_image3d_type is not None:
-            # update config
-            self.config.encoder_image3d_type = model_arguments.encoder_image3d_type
-            self.config.encoder_image3d_name_or_path = model_arguments.encoder_image3d_name_or_path
-            self.config.encoder_image3d_select_layer = model_arguments.encoder_image3d_select_layer
-            self.config.encoder_image3d_select_feature = model_arguments.encoder_image3d_select_feature
-            self.config.connector_image3d_type = model_arguments.connector_image3d_type
-            self.config.connector_image3d_name = model_arguments.connector_image3d_name
-            self.config.connector_image3d_path = model_arguments.connector_image3d_path
-            self.config.encoder_image3d_config = ENCODER_FACTORY[model_arguments.encoder_image3d_type][0](model_arguments)
-            self.config.connector_image3d_config = CONNECTOR_FACTORY[model_arguments.connector_image3d_type][0](
-                model_arguments=model_arguments,
-                llm_config=self.config.llm_config,
-                encoder_config=self.config.encoder_image3d_config,
-            )
-
-            # update model
-            self.encoder_image3d = ENCODER_FACTORY[self.config.encoder_image3d_type][1](self.config)
-            self.connector_image3d = CONNECTOR_FACTORY[self.config.connector_image3d_type][1](self.config)
-            self.connector_image3d.load_model(self.config.connector_image3d_path)
+        if self.encoder_image3d is not None:
+            self.encoder_image3d.load_pretrained_weights()
+            self.connector_image3d.load_pretrained_weights()
 
     def generate(self, input_ids, attention_mask, image, image3d, **generation_config):
         llm_inputs = self.prepare_inputs_for_multimodal(input_ids, attention_mask, image, image3d)
@@ -136,8 +120,8 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
         if image is not None:
             image = self.encoder_image(
                 image,
-                select_layer=self.config.encoder_image_select_layer,
-                select_feature=self.config.encoder_image_select_feature,
+                select_layer=self.config.lvlm_encoder_image_select_layer,
+                select_feature=self.config.lvlm_encoder_image_select_feature,
             )
             image = self.connector_image(image)
 
@@ -149,8 +133,8 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
 
                 image = self.encoder_image(
                     image,
-                    select_layer=self.config.encoder_image_select_layer,
-                    select_feature=self.config.encoder_image_select_feature,
+                    select_layer=self.config.lvlm_encoder_image_select_layer,
+                    select_feature=self.config.lvlm_encoder_image_select_feature,
                 )
 
                 image = image.view(B, N, image.shape[1], image.shape[2])  # (B, N, L, D)
@@ -163,8 +147,8 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
             elif self.encoder_image3d is not None:
                 image3d = self.encoder_image3d(
                     image3d,
-                    select_layer=self.config.encoder_image3d_select_layer,
-                    select_feature=self.config.encoder_image3d_select_feature,
+                    select_layer=self.config.lvlm_encoder_image3d_select_layer,
+                    select_feature=self.config.lvlm_encoder_image3d_select_feature,
                 )
                 image3d = self.connector_image3d(image3d)
 
@@ -253,9 +237,9 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
             inputs_embeds.append(torch.cat(cur_inputs_embeds))
             new_labels.append(torch.cat(cur_new_labels))
 
-        # 将inputs_embeds、new_labels按照llm_max_length截断
-        inputs_embeds = [x[: self.config.llm_max_length] for x in inputs_embeds]
-        labels = [x[: self.config.llm_max_length] for x in new_labels]
+        # 将inputs_embeds、new_labels按照lvlm_llm_max_length截断
+        inputs_embeds = [x[: self.config.lvlm_llm_max_length] for x in inputs_embeds]
+        labels = [x[: self.config.lvlm_llm_max_length] for x in new_labels]
 
         # 初始化inputs_embeds_padded、labels_padded、attention_mask_padded、position_ids_padded
         batch_size = len(inputs_embeds)
@@ -272,7 +256,7 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
             device=self.device,
         )
 
-        # 按照llm_padding_side填充inputs_embeds_padded、labels_padded、attention_mask_padded、position_ids_padded
+        # 按照lvlm_llm_padding_side填充inputs_embeds_padded、labels_padded、attention_mask_padded、position_ids_padded
         for i, (cur_inputs_embeds, cur_labels) in enumerate(zip(inputs_embeds, labels)):
             cur_len = cur_inputs_embeds.size(0)
             zero_inputs_embeds = torch.zeros(
@@ -280,7 +264,7 @@ class LVLMForConditionalGeneration(LVLMPreTrainedModel):
                 dtype=self.dtype,
                 device=self.device,
             )
-            if self.config.llm_padding_side == "left":
+            if self.config.lvlm_llm_padding_side == "left":
                 inputs_embeds_padded.append(torch.cat((zero_inputs_embeds, cur_inputs_embeds)))
                 labels_padded[i, -cur_len:] = cur_labels
                 attention_mask_padded[i, -cur_len:] = True

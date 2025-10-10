@@ -4,36 +4,38 @@ import monai.transforms as mtf
 import numpy as np
 import torch
 from transformers import AutoConfig
-from transformers import SiglipImageProcessor, SiglipVisionModel
+from transformers import SiglipImageProcessor, SiglipVisionModel, AutoModel
 
 from lvlm.model.encoder.base import EncoderModel
 
 
-def siglip_load_config(model_arguments):
-    encoder_image_config = AutoConfig.from_pretrained(
-        model_arguments.encoder_image_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def siglip_load_config(lvlm_encoder_image_name_or_path, **kwargs):
+    lvlm_encoder_image_config = AutoConfig.from_pretrained(
+        lvlm_encoder_image_name_or_path,
         trust_remote_code=True,
     )
-    if hasattr(encoder_image_config, "vision_config"):
-        _name_or_path = encoder_image_config._name_or_path
-        encoder_image_config = getattr(encoder_image_config, "vision_config", encoder_image_config)
-        encoder_image_config._name_or_path = _name_or_path
+    if hasattr(lvlm_encoder_image_config, "vision_config"):
+        _name_or_path = lvlm_encoder_image_config._name_or_path
+        lvlm_encoder_image_config = getattr(lvlm_encoder_image_config, "vision_config", lvlm_encoder_image_config)
+        lvlm_encoder_image_config._name_or_path = _name_or_path
 
-    return encoder_image_config
+    lvlm_encoder_image_config.lvlm_encoder_image_name_or_path = lvlm_encoder_image_name_or_path
+    return lvlm_encoder_image_config
 
 
 class ImageProcessor:
     def __init__(self, config):
-        self.processor = SiglipImageProcessor.from_pretrained(
-            config.encoder_image_name_or_path,
-            cache_dir=config.cache_dir_hf,
-        )
+        self.processor = SiglipImageProcessor.from_pretrained(config.lvlm_encoder_image_name_or_path)
 
+        resized_size = [
+            32,
+            config.image_size,
+            config.image_size,
+        ]
         self.transform_3d_train = mtf.Compose(
             [
                 mtf.CropForeground(),
-                mtf.Resize(spatial_size=[32, config.encoder_image_config.image_size, config.encoder_image_config.image_size], mode="bilinear"),
+                mtf.Resize(spatial_size=resized_size, mode="trilinear"),
                 mtf.RandRotate90(prob=0.5, spatial_axes=(1, 2)),
                 mtf.RandFlip(prob=0.10, spatial_axis=0),
                 mtf.RandFlip(prob=0.10, spatial_axis=1),
@@ -46,7 +48,7 @@ class ImageProcessor:
         self.transform_3d_val = mtf.Compose(
             [
                 mtf.CropForeground(),
-                mtf.Resize(spatial_size=[32, config.encoder_image_config.image_size, config.encoder_image_config.image_size], mode="bilinear"),
+                mtf.Resize(spatial_size=resized_size, mode="trilinear"),
                 mtf.ToTensor(dtype=torch.float),
             ]
         )
@@ -74,11 +76,12 @@ class ImageProcessor:
 class SiglipModel(EncoderModel):
     def __init__(self, config):
         super().__init__(config)
+        self.config = config
 
-        self.config = config.encoder_image_config
         self.processor = ImageProcessor(config)
-        self.encoder = SiglipVisionModel.from_pretrained(
-            config.encoder_image_name_or_path,
-            cache_dir=config.cache_dir_hf,
-        )
+        self.encoder = SiglipVisionModel._from_config(config)
+        self.encoder.requires_grad_(False)
+
+    def load_pretrained_weights(self):
+        self.encoder = self.encoder.from_pretrained(self.config.lvlm_encoder_image_name_or_path)
         self.encoder.requires_grad_(False)

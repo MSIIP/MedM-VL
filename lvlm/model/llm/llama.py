@@ -2,65 +2,65 @@ from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM
 from transformers import LlamaForCausalLM
 
 
-def llama_load_config(model_arguments):
-    llm_config = AutoConfig.from_pretrained(
-        model_arguments.llm_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def llama_load_config(lvlm_llm_name_or_path, **kwargs):
+    lvlm_llm_config = AutoConfig.from_pretrained(
+        lvlm_llm_name_or_path,
         trust_remote_code=True,
     )
-    return llm_config
+    return lvlm_llm_config
+
+
+def llama_load_tokenizer(
+    lvlm_llm_name_or_path,
+    lvlm_llm_max_length,
+    lvlm_llm_padding_side,
+):
+    tokenizer = AutoTokenizer.from_pretrained(
+        lvlm_llm_name_or_path,
+        model_max_length=lvlm_llm_max_length,
+        padding_side=lvlm_llm_padding_side,
+        use_fast=False,
+        trust_remote_code=True,
+    )
+    return tokenizer
 
 
 def llama_load_model(config):
-    model = LlamaForCausalLM.from_pretrained(
-        pretrained_model_name_or_path=config.llm_name_or_path,
-        attn_implementation=config.llm_attn_implementation,
-        cache_dir=config.cache_dir_hf,
-    )
+    model = LlamaForCausalLM._from_config(config)
     model.requires_grad_(False)
+    return model
 
-    tokenizer = AutoTokenizer.from_pretrained(
-        config.llm_name_or_path,
-        model_max_length=config.llm_max_length,
-        padding_side=config.llm_padding_side,
-        cache_dir=config.cache_dir_hf,
-        use_fast=config.tokenizer_use_fast,
+
+def llama3_load_config(lvlm_llm_name_or_path, **kwargs):
+    lvlm_llm_config = AutoConfig.from_pretrained(
+        lvlm_llm_name_or_path,
         trust_remote_code=True,
     )
-
-    return model, tokenizer
-
-
-def llama3_load_config(model_arguments):
-    llm_config = AutoConfig.from_pretrained(
-        model_arguments.llm_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
-        trust_remote_code=True,
-    )
-    return llm_config
+    return lvlm_llm_config
 
 
 # bos_token: <|begin_of_text|> 128000
 # eos_token: <|eot_id|> 128009
 # pad_token: None None
 # unk_token: None None
-def llama3_load_model(config):
-    model = AutoModelForCausalLM.from_pretrained(
-        pretrained_model_name_or_path=config.llm_name_or_path,
-        attn_implementation=config.llm_attn_implementation,
-        cache_dir=config.cache_dir_hf,
-    )
-    model.requires_grad_(False)
-
+def llama3_load_tokenizer(
+    lvlm_llm_name_or_path,
+    lvlm_llm_max_length,
+    lvlm_llm_padding_side,
+):
     tokenizer = AutoTokenizer.from_pretrained(
-        config.llm_name_or_path,
-        model_max_length=config.llm_max_length,
-        padding_side=config.llm_padding_side,
-        cache_dir=config.cache_dir_hf,
-        use_fast=config.tokenizer_use_fast,
+        lvlm_llm_name_or_path,
+        model_max_length=lvlm_llm_max_length,
+        padding_side=lvlm_llm_padding_side,
+        use_fast=False,
         trust_remote_code=True,
     )
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.pad_token_id = tokenizer.eos_token_id
+    return tokenizer
 
-    return model, tokenizer
+
+def llama3_load_model(config):
+    model = AutoModelForCausalLM.from_config(config)
+    model.requires_grad_(False)
+    return model

@@ -5,8 +5,7 @@ class EncoderModel(nn.Module):
     def __init__(self, config):
         super().__init__()
 
-        self.cache_dir_hf = config.cache_dir_hf
-        self.config = None
+        self.config = config
         self.processor = None
         self.encoder = None
 

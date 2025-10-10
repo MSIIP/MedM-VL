@@ -1,5 +1,3 @@
-import os.path as osp
-
 import torch
 import torch.nn as nn
 
@@ -12,13 +10,12 @@ class Connector(nn.Module):
     def __init__(self, config):
         super().__init__()
 
-        self.cache_dir_hf = config.cache_dir_hf
-        self.config = None
+        self.config = config
         self.connector = None
 
-    def load_model(self, model_path):
-        if model_path is not None:
-            connector_weights = torch.load(model_path, map_location="cpu")
+    def load_pretrained_weights(self):
+        if self.config.lvlm_connector_path is not None:
+            connector_weights = torch.load(self.config.lvlm_connector_path, map_location="cpu")
             self.connector.load_state_dict(get_w(connector_weights, "connector"))
 
         for p in self.connector.parameters():

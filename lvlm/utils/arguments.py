@@ -11,62 +11,39 @@ from transformers import set_seed as hf_set_seed
 
 @dataclass
 class ModelArguments:
-    cache_dir_hf: Optional[str] = field(default=None)
-
     # text
-    llm_type: Optional[str] = field(default=None)
-    llm_name_or_path: Optional[str] = field(default=None)
-    llm_max_length: Optional[int] = field(default=None)
-    llm_padding_side: Optional[str] = field(default=None)
-    llm_attn_implementation: Optional[str] = field(default=None)
-    tokenizer_use_fast: Optional[bool] = field(default=False)  # 虽然TokenizerFast快很多，但可能导致decode后与原文不一致
+    lvlm_llm_type: Optional[str] = field(default=None)
+    lvlm_llm_name_or_path: Optional[str] = field(default=None)
+    lvlm_llm_max_length: Optional[int] = field(default=None)
+    lvlm_llm_padding_side: Optional[str] = field(default=None)
+    lvlm_llm_attn_implementation: Optional[str] = field(default=None)
 
     # image
-    encoder_image_type: Optional[str] = field(default=None)
-    encoder_image_name_or_path: Optional[str] = field(default=None)
-    encoder_image_select_layer: Optional[int] = field(default=None)
-    encoder_image_select_feature: Optional[str] = field(default=None)
-    connector_image_type: Optional[str] = field(default=None)
-    connector_image_name: Optional[str] = field(default=None)
-    connector_image_path: Optional[str] = field(default=None)
+    lvlm_encoder_image_type: Optional[str] = field(default=None)
+    lvlm_encoder_image_name_or_path: Optional[str] = field(default=None)
+    lvlm_encoder_image_select_layer: Optional[int] = field(default=None)
+    lvlm_encoder_image_select_feature: Optional[str] = field(default=None)
+    lvlm_connector_image_type: Optional[str] = field(default=None)
+    lvlm_connector_image_name: Optional[str] = field(default=None)
+    lvlm_connector_image_path: Optional[str] = field(default=None)
 
     # image3d
-    encoder_image3d_type: Optional[str] = field(default=None)
-    encoder_image3d_name_or_path: Optional[str] = field(default=None)
-    encoder_image3d_select_layer: Optional[int] = field(default=None)
-    encoder_image3d_select_feature: Optional[str] = field(default=None)
-    connector_image3d_type: Optional[str] = field(default=None)
-    connector_image3d_name: Optional[str] = field(default=None)
-    connector_image3d_path: Optional[str] = field(default=None)
-
-    # 设置print格式，每个属性打印一行，开头打印类名
-    def __str__(self):
-        return (
-            f"{self.__class__.__name__}(\n"
-            + ",\n".join(f"{k}={v}" for k, v in self.__dict__.items())
-            + ",\n)"
-        )
-
-
-@dataclass
-class DataArguments:
-    data_path: str = field(default=None)
-    conv_version: str = field(default="pretrain")
-
-    image_path: Optional[str] = field(default=None)
-    image3d_path: Optional[str] = field(default=None)
-
-    # 设置print格式，每个属性打印一行，开头打印类名
-    def __str__(self):
-        return (
-            f"{self.__class__.__name__}(\n"
-            + ",\n".join(f"{k}={v}" for k, v in self.__dict__.items())
-            + ",\n)"
-        )
+    lvlm_encoder_image3d_type: Optional[str] = field(default=None)
+    lvlm_encoder_image3d_name_or_path: Optional[str] = field(default=None)
+    lvlm_encoder_image3d_select_layer: Optional[int] = field(default=None)
+    lvlm_encoder_image3d_select_feature: Optional[str] = field(default=None)
+    lvlm_connector_image3d_type: Optional[str] = field(default=None)
+    lvlm_connector_image3d_name: Optional[str] = field(default=None)
+    lvlm_connector_image3d_path: Optional[str] = field(default=None)
 
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
+    data_path: str = field(default=None)
+    conv_version: str = field(default="pretrain")
+    image_dir: Optional[str] = field(default=None)
+    image3d_dir: Optional[str] = field(default=None)
+
     training_recipe: str = field(default="common")
 
     tune_type_llm: str = field(default="frozen")
@@ -76,17 +53,9 @@ class TrainingArguments(transformers.TrainingArguments):
     llm_lora_bias: Optional[str] = field(default=None)
 
     tune_type_encoder_image: str = field(default="frozen")
-    encoder_image_lora_r: Optional[int] = field(default=None)
-    encoder_image_lora_alpha: Optional[int] = field(default=None)
-    encoder_image_lora_dropout: Optional[float] = field(default=None)
-    encoder_image_lora_bias: Optional[str] = field(default=None)
     tune_type_connector_image: str = field(default="frozen")
 
     tune_type_encoder_image3d: str = field(default="frozen")
-    encoder_image3d_lora_r: Optional[int] = field(default=None)
-    encoder_image3d_lora_alpha: Optional[int] = field(default=None)
-    encoder_image3d_lora_dropout: Optional[float] = field(default=None)
-    encoder_image3d_lora_bias: Optional[str] = field(default=None)
     tune_type_connector_image3d: str = field(default="frozen")
 
     ratio_json: str = field(default=None, metadata={"help": "extra args"})

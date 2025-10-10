@@ -11,23 +11,22 @@ from transformers import PretrainedConfig, PreTrainedModel, BertModel
 from lvlm.model.encoder.base import EncoderModel
 
 
-def medmclip_load_config(model_arguments):
-    encoder_image3d_config = MedMCLIPConfig.from_pretrained(
-        model_arguments.encoder_image3d_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def medmclip_load_config(lvlm_encoder_image3d_name_or_path, **kwargs):
+    lvlm_encoder_image3d_config = MedMCLIPConfig.from_pretrained(
+        lvlm_encoder_image3d_name_or_path,
         trust_remote_code=True,
     )
-    encoder_image3d_config.img_size = [
-        encoder_image3d_config.frame_size,
-        encoder_image3d_config.image_size,
-        encoder_image3d_config.image_size,
+    lvlm_encoder_image3d_config.image_size = [
+        lvlm_encoder_image3d_config.frame_size,
+        lvlm_encoder_image3d_config.image_size,
+        lvlm_encoder_image3d_config.image_size,
     ]
-    encoder_image3d_config.patch_size = [
-        encoder_image3d_config.frame_patch_size,
-        encoder_image3d_config.image_patch_size,
-        encoder_image3d_config.image_patch_size,
+    lvlm_encoder_image3d_config.patch_size = [
+        lvlm_encoder_image3d_config.frame_patch_size,
+        lvlm_encoder_image3d_config.image_patch_size,
+        lvlm_encoder_image3d_config.image_patch_size,
     ]
-    return encoder_image3d_config
+    return lvlm_encoder_image3d_config
 
 
 class Image3DProcessor:
@@ -70,12 +69,15 @@ class Image3DProcessor:
 class MedMCLIPModel(EncoderModel):
     def __init__(self, config):
         super().__init__(config)
+        self.config = config
 
-        self.config = config.encoder_image3d_config
         self.processor = Image3DProcessor()
-        self.encoder = MedMCLIP.from_pretrained(
-            config.encoder_image3d_name_or_path,
-            cache_dir=config.cache_dir_hf,
+        self.encoder = MedMCLIP._from_config(config)
+        self.encoder.requires_grad_(False)
+
+    def load_pretrained_weights(self):
+        self.encoder = self.encoder.from_pretrained(
+            self.config.lvlm_encoder_image3d_name_or_path,
             trust_remote_code=True,
         )
         self.encoder.requires_grad_(False)

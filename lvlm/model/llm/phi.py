@@ -3,61 +3,61 @@ from transformers import PhiForCausalLM
 from transformers import Phi3ForCausalLM
 
 
-def phi_load_config(model_arguments):
-    llm_config = AutoConfig.from_pretrained(
-        model_arguments.llm_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def phi_load_config(lvlm_llm_name_or_path, **kwargs):
+    lvlm_llm_config = AutoConfig.from_pretrained(
+        lvlm_llm_name_or_path,
         trust_remote_code=True,
     )
-    return llm_config
+    return lvlm_llm_config
 
 
-def phi_load_model(config):
-    model = PhiForCausalLM.from_pretrained(
-        pretrained_model_name_or_path=config.llm_name_or_path,
-        attn_implementation=config.llm_attn_implementation,
-        cache_dir=config.cache_dir_hf,
-    )
-    model.requires_grad_(False)
-
+def phi_load_tokenizer(
+    lvlm_llm_name_or_path,
+    lvlm_llm_max_length,
+    lvlm_llm_padding_side,
+):
     tokenizer = AutoTokenizer.from_pretrained(
-        config.llm_name_or_path,
-        model_max_length=config.llm_max_length,
-        padding_side=config.llm_padding_side,
-        cache_dir=config.cache_dir_hf,
-        use_fast=config.tokenizer_use_fast,
+        lvlm_llm_name_or_path,
+        model_max_length=lvlm_llm_max_length,
+        padding_side=lvlm_llm_padding_side,
+        use_fast=False,
         trust_remote_code=True,
     )
     tokenizer.pad_token = tokenizer.unk_token
     tokenizer.pad_token_id = tokenizer.unk_token_id
+    return tokenizer
 
-    return model, tokenizer
+
+def phi_load_model(config):
+    model = PhiForCausalLM._from_config(config)
+    model.requires_grad_(False)
+    return model
 
 
-def phi3_load_config(model_arguments):
-    llm_config = AutoConfig.from_pretrained(
-        model_arguments.llm_name_or_path,
-        cache_dir=model_arguments.cache_dir_hf,
+def phi3_load_config(lvlm_llm_name_or_path, **kwargs):
+    lvlm_llm_config = AutoConfig.from_pretrained(
+        lvlm_llm_name_or_path,
         trust_remote_code=True,
     )
-    return llm_config
+    return lvlm_llm_config
+
+
+def phi3_load_tokenizer(
+    lvlm_llm_name_or_path,
+    lvlm_llm_max_length,
+    lvlm_llm_padding_side,
+):
+    tokenizer = AutoTokenizer.from_pretrained(
+        lvlm_llm_name_or_path,
+        model_max_length=lvlm_llm_max_length,
+        padding_side=lvlm_llm_padding_side,
+        use_fast=False,
+        trust_remote_code=True,
+    )
+    return tokenizer
 
 
 def phi3_load_model(config):
-    model = Phi3ForCausalLM.from_pretrained(
-        pretrained_model_name_or_path=config.llm_name_or_path,
-        attn_implementation=config.llm_attn_implementation,
-        cache_dir=config.cache_dir_hf,
-    )
+    model = Phi3ForCausalLM._from_config(config)
     model.requires_grad_(False)
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        config.llm_name_or_path,
-        model_max_length=config.llm_max_length,
-        padding_side=config.llm_padding_side,
-        cache_dir=config.cache_dir_hf,
-        use_fast=config.tokenizer_use_fast,
-        trust_remote_code=True,
-    )
-
-    return model, tokenizer
+    return model
