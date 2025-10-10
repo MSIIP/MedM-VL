@@ -142,11 +142,13 @@ bash examples/playground.sh
 ## :book: Citation
 
 ``` bibtex
-@article{shi2025medm,
-  title={MedM-VL: What Makes a Good Medical LVLM?},
-  author={Shi, Yiming and Yang, Shaoshuai and Zhu, Xun and Wang, Haoyu and Li, Miao and Wu, Ji},
-  journal={arXiv preprint arXiv:2504.04323},
-  year={2025}
+@inproceedings{shi2025medm,
+  title={Medm-vl: What makes a good medical lvlm?},
+  author={Shi, Yiming and Yang, Shaoshuai and Zhu, Xun and Wang, Haoyu and Fu, Xiangling and Li, Miao and Wu, Ji},
+  booktitle={International Workshop on Agentic AI for Medicine},
+  pages={290--299},
+  year={2025},
+  organization={Springer}
 }
 ```
 

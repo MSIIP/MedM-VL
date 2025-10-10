@@ -15,7 +15,7 @@ deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --lvlm_connector_image3d_name mlp2x_gelu \
     --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/train_rg.json \
     --conv_version pretrain_image3d \
-    --image3d_dir /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
+    --image3d_dir /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_npy/train \
     --training_recipe common \
     --tune_type_llm frozen \
     --tune_type_encoder_image3d frozen \

@@ -2,9 +2,9 @@ export PYTHONPATH=$PYTHONPATH:/home/shiym/projects/MedM-VL
 
 deepspeed --include localhost:0,1 --master_port 29501 lvlm/train.py \
     --deepspeed examples/zero2.json \
-    --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/train_vqa.json \
+    --data_path /hdd/shiym/datasets_processed/MedM-VL/ctrate/train_all.json \
     --conv_version qwen2 \
-    --image3d_dir /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_raw/train \
+    --image3d_dir /hdd/common/datasets/medical-image-analysis/CT-RATE/dataset/preprocessed_npy/train \
     --training_recipe common \
     --tune_type_llm full \
     --tune_type_encoder_image full \
