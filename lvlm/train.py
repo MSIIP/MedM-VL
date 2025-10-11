@@ -1,7 +1,4 @@
 import json
-import random
-import os
-import os.path as osp
 from types import SimpleNamespace
 
 import transformers

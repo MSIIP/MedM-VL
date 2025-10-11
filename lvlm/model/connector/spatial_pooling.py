@@ -7,6 +7,7 @@ from transformers import PretrainedConfig
 
 from lvlm.model.connector.base import Connector
 
+
 ACT_TYPE = {"relu": nn.ReLU, "gelu": nn.GELU}
 
 
@@ -25,7 +26,6 @@ class ConnectorConfig(PretrainedConfig):
         self.patch_size = lvlm_encoder_config.patch_size  # list
         self.input_dim = lvlm_encoder_config.hidden_size
         self.output_dim = lvlm_llm_config.hidden_size
-
 
 
 def spatial_pooling_load_config(lvlm_llm_config, lvlm_encoder_config, **kwargs):

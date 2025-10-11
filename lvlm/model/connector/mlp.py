@@ -5,6 +5,7 @@ from transformers import PretrainedConfig
 
 from lvlm.model.connector.base import Connector
 
+
 ACT_TYPE = {"relu": nn.ReLU, "gelu": nn.GELU}
 
 
