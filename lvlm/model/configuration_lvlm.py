@@ -51,12 +51,6 @@ class LVLMConfig(PretrainedConfig):
         self.lvlm_connector_image3d_name = lvlm_connector_image3d_name
         self.lvlm_connector_image3d_path = lvlm_connector_image3d_path
 
-        self.lvlm_llm_config = None
-        self.lvlm_encoder_image_config = None
-        self.lvlm_connector_image_config = None
-        self.lvlm_encoder_image3d_config = None
-        self.lvlm_connector_image3d_config = None
-
         if lvlm_llm_type is not None:
             lvlm_llm_config = LLM_FACTORY[lvlm_llm_type][0](
                 lvlm_llm_name_or_path=lvlm_llm_name_or_path,
