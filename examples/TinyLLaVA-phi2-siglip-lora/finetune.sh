@@ -31,4 +31,5 @@ deepspeed --include localhost:0,1,2,3 --master_port 29501 lvlm/train.py \
     --logging_steps 1 \
     --report_to tensorboard \
     --eval_strategy no \
-    --save_strategy no
+    --save_strategy no \
+    --remove_unused_columns False
